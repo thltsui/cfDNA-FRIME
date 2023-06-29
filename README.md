@@ -81,9 +81,9 @@ The Scripts folder contains the following files:
 
 ## Simulation Results
 
-The **simulation_results** folder stores the results and outputs generated from running the FRIME simulations. The contents of this folder can be generated after running **simulation.ipynb**. They include the stationary profile plots used for the manuscript. 
+The **simulation_results** folder stores the results and outputs generated from running the FRIME simulations. The contents of this folder can be generated after running **simulation.ipynb**. In particular, the stationary profile plots stored in **simulation_results/numerical_experiment/clean_output** are used to produce Figure 3,4,5 in the manunuscript and Fig S1, S2, S9 in the supplementary materials.
 
 
 ## Clinical Data Analysis Results
 
-The **data_analysis** folder contains the analysis results and findings obtained from comparing the FRIME simulations with clinical cell-free DNA fragment profiles. The content of this folder can be generated after running **data_analysis.ipynb**. They include plots of individual clinical cfDNA fragment profile, parameters for best-fitting FRIME simulations, plot of fragment profiles for all samples, and the $p$-value evolution of FRIME simulations.
+The **data_analysis** folder contains the analysis results and findings obtained from comparing the FRIME simulations with clinical cell-free DNA fragment profiles. The content of this folder can be generated after running **data_analysis.ipynb**. They include plots of clinical cfDNA fragment profile for Fig 2,6,7,8 in the manuscript and Fig S3, S5-S8 in the supplementary materials, parameters of best-fitting FRIME simulations for Table 3 in the manuscript, and the $p$-value evolution of FRIME simulations for Fig S4.
