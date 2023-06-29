@@ -27,10 +27,13 @@ The aim of this repository is to provide a framework for generating simulations 
 
 The repository is organized into the following folders:
 
-**Script**: Contains scripts related to the FRIME simulation and analysis.
-**Data Preprocessing**: Contains files and scripts for preprocessing the data used in the simulation and analysis.
-**Simulation Results**: Stores the results and outputs generated from running the FRIME simulations.
-**Clinical Data Analysis Results**: Contains the analysis results and findings obtained from comparing the FRIME simulations with clinical cell-free DNA fragment profiles.
+**script**: Contains scripts related to the FRIME simulation and analysis.
+
+**data_preprocessing**: Contains files and scripts for preprocessing the data used in the simulation and analysis.
+
+**simulation_results**: Stores the results and outputs generated from running the FRIME simulations.
+
+**data_analysis**: Contains the analysis results and findings obtained from comparing the FRIME simulations with clinical cell-free DNA fragment profiles.
 
 ## Usage
 
@@ -42,27 +45,38 @@ git clone https://github.com/thltsui/cfDNA-FRIME.git
 
 cd cfDNA-FRIME
 
-Run the jupyter notebooks under **Script**.
+Run the jupyter notebooks under **script**.
 
 
 ## Data Preprocessing
 
 The Data Preprocessing folder contains the following files:
 
+
 **script_1_data_preprocess.sh**: This script contains the codes and instructions to generate cell-free DNA fragment counts for our study.
+
+
 **mtDNA_modeling_data.csv**: This CSV file is produced from **script_1_data_preprocess.sh** and contains cell-free DNA fragment counts for clinical data analysis.
+
 
 ## Scripts
 
 The Scripts folder contains the following files:
 
+
 cfDNA_Data_analysis.ipynb: This Jupyter notebook is used to conduct cell-free DNA clinical data analysis.
+
+
 Frag_Ex_Imm_Func.py: This Python script stores functions necessary to run FRIME simulations.
+
+
 FRIME_Simulation.ipynb: This Jupyter notebook is used to run different numerical experiments on the stationary profile of FRIME simulations.
+
 
 ## Simulation Results
 
 The Simulation Results folder stores the results and outputs generated from running the FRIME simulations. The contents of this folder can be generated after running **FRIME_Simulation.ipynb**.
+
 
 ## Clinical Data Analysis Results
 
