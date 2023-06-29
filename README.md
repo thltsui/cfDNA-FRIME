@@ -31,6 +31,10 @@ The repository is organized into the following folders:
 
 **data_preprocessing**: Contains files and scripts for preprocessing the data used in the simulation and analysis.
 
+
+
+After running the jupyter notebooks under the **script** folder, the following two folders will also be generated.
+
 **simulation_results**: Stores the results and outputs generated from running the FRIME simulations.
 
 **data_analysis**: Contains the analysis results and findings obtained from comparing the FRIME simulations with clinical cell-free DNA fragment profiles.
@@ -41,9 +45,11 @@ To use this repository, follow these steps:
 
 Clone the repository to your local machine:
 
+```
 git clone https://github.com/thltsui/cfDNA-FRIME.git
 
 cd cfDNA-FRIME
+```
 
 Run the jupyter notebooks under **script**.
 
@@ -64,20 +70,20 @@ The Data Preprocessing folder contains the following files:
 The Scripts folder contains the following files:
 
 
-cfDNA_Data_analysis.ipynb: This Jupyter notebook is used to conduct cell-free DNA clinical data analysis.
+**data_analysis.ipynb**: This Jupyter notebook is used to conduct cell-free DNA clinical data analysis.
 
 
-Frag_Ex_Imm_Func.py: This Python script stores functions necessary to run FRIME simulations.
+**frime.py**: This Python script stores functions necessary to run FRIME simulations.
 
 
-FRIME_Simulation.ipynb: This Jupyter notebook is used to run different numerical experiments on the stationary profile of FRIME simulations.
+**simulation.ipynb**: This Jupyter notebook is used to run different numerical experiments on the stationary profile of FRIME simulations.
 
 
 ## Simulation Results
 
-The Simulation Results folder stores the results and outputs generated from running the FRIME simulations. The contents of this folder can be generated after running **FRIME_Simulation.ipynb**.
+The **simulation_results** folder stores the results and outputs generated from running the FRIME simulations. The contents of this folder can be generated after running **simulation.ipynb**. They include the stationary profile plots used for the manuscript. 
 
 
 ## Clinical Data Analysis Results
 
-The Clinical Data Analysis Results folder contains the analysis results and findings obtained from comparing the FRIME simulations with clinical cell-free DNA fragment profiles. The content of this folder can be generated after runnin **cfDNA_Data_analysis.ipynb**.
+The **data_analysis** folder contains the analysis results and findings obtained from comparing the FRIME simulations with clinical cell-free DNA fragment profiles. The content of this folder can be generated after running **data_analysis.ipynb**. They include plots of individual clinical cfDNA fragment profile, parameters for best-fitting FRIME simulations, plot of fragment profiles for all samples, and the $p$-value evolution of FRIME simulations.
