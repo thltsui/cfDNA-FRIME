@@ -87,3 +87,20 @@ The **simulation_results** folder stores the results and outputs generated from 
 ## Clinical Data Analysis Results
 
 The **data_analysis** folder contains the analysis results and findings obtained from comparing the FRIME simulations with clinical cell-free DNA fragment profiles. The content of this folder can be generated after running **data_analysis.ipynb**. They include plots of clinical cfDNA fragment profile for Fig 2,6,7,8 in the manuscript and Fig S3, S5-S8 in the supplementary materials, parameters of best-fitting FRIME simulations for Table 3 in the manuscript, and the $p$-value evolution of FRIME simulations for Fig S4.
+
+
+## Citation
+The algorithms used in this repo are based on the following paper. If you use the FRIME model in your research we would appreciate a citation to the following paper:
+
+~~~
+
+@article{Tsui_2023,
+	doi = {10.1101/2023.07.06.547953},
+	url = {https://doi.org/10.1101%2F2023.07.06.547953},
+	year = 2023,	month = {jul},
+	publisher = {Cold Spring Harbor Laboratory},
+	author = {Terence H.L. Tsui and Phil F. Xie and Salvador Chuli{\'{a}}n and V{\'{\i}}ctor M. P{\'{e}}rez-Garc{\'{\i}}a},
+	title = {Breaking Down Cell-Free {DNA} Fragmentation: A Markov Model Approach}
+}
+
+~~~
