@@ -1,0 +1,8 @@
+............................................................             [100%]
+============================= slowest 5 durations ==============================
+2.77s call     tests/test_distributions.py::test_uniform_constant_rate_stationary_histograms
+1.23s call     tests/test_distributions.py::test_stationary_mean_without_exit
+0.85s call     tests/test_forest.py::test_worker_and_batch_invariance[lazy]
+0.77s call     tests/test_forest.py::test_worker_and_batch_invariance[skeleton]
+0.76s call     tests/test_forest.py::test_parallel_pruning_of_precomputed_bank
+60 passed in 8.29s
