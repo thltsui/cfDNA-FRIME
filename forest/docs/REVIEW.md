@@ -1,77 +1,27 @@
-# Review packet 01 — Poisson-forest FRIME
+# Review packet 02 — certificate audit
 
-**Date:** 8 September 2026. **Status:** prototype implemented and locally tested;
-not merged, not benchmarked on the user's Mac mini.
+**Date:** 8 September 2026. **Scope:** mathematical audit only; no simulator code changed.
 
-## Result
+## What I checked
 
-The new engine works independently of the old next-event programme. It represents
-FRIME as independent immigrant families, applies inherited killing, stitches those
-families onto Poisson immigration, and reports a deterministic lookback selected
-from an analytic history-error bound. Existing source, notebooks and data remain
-untouched. The source idea is thesis Section 8.1.2; the explicit Lyapunov certificate
-and validation identities are separately derived in MATHEMATICS.md.
+PR #1 remains open/draft and had no comments or submitted reviews at the start of this session. I re-derived the stationary-history argument in `MATHEMATICS.md` §§4–5, including the Poisson thinning step, the path coupling, the p-mass Lyapunov drift, and the interval lower envelope used for `kappa_p`.
 
-## Evidence
+## Main result
 
-**60 tests passed** in the recorded local run; see TEST_RESULTS.txt. Tests include
-ancestral pruning, inclusive/exclusive event boundaries, cutoff and mass checks,
-parallel reproducibility, resource failures, analytic stationary first moments,
-and independent chronological-reference comparisons of count, mass and squared
-count for nonuniform Beta splits and all three exit functions.
+I find the present certificate mathematically valid under its stated assumptions: `0 < ell < L`, finite rates on `[ell,L]`, independent immigrant families, and Chapter-7 total immigration rate `c_i`. In particular,
 
-Local host: Linux-6.18.35-x86_64-with-glibc2.41, Python 3.13.5, NumPy 2.3.5.
-The tests ran with actual spawned workers, not mocked parallelism.
+`Lambda_T = c_i E[(tau_X-T)_+]`
 
-### Cold-start timing: a deliberately modest PFB workload
+is the mean number of omitted old families still alive at time 0, so the common-driver mismatch probability is exactly `1-exp(-Lambda_T)`. If no omitted family is alive at 0, it cannot reappear, so the same coupling controls the whole future path; `T` truncates immigration history and never forces family extinction.
 
-Model: L=1, ell=.02, c_f=2, alpha=1, c_i=100, a=b=1,
-E(x)=max(x^(-1)-.4^(-1),0). Requested delta=1e-6.
-Lookback T=70.067299; selected p=4.
-Three seeds per setting; medians include process startup, IPC, tree work and
-assembly but exclude the final snapshot query. No legacy-runtime comparison.
+The implemented p-mass estimate is conservative but sound. For the benchmark PFB model (`L=1, ell=.02, c_f=2, alpha=1, c_i=100, B=.4, beta=-1`), the selected `p=4` gives `kappa≈0.47391664` and `T≈70.0673` for `delta=1e-6`, reproducing the recorded value.
 
-| Mode | Workers | Median elapsed |
-|---|---:|---:|
-| lazy | 1 | 0.345 s |
-| lazy | 2 | 1.142 s |
-| skeleton | 1 | 1.347 s |
-| skeleton | 2 | 1.482 s |
+## Evidence on conservatism
 
-For seed 12345, both modes simulated 6,997
-immigrant families. Lazy mode stored 36,842
-nodes versus 337,192 for complete skeletons.
-Outputs were bit-for-bit identical across worker counts within each mode.
-They need not be identical across modes.
+As an independent diagnostic, I simulated 4,000,000 single immigrant families directly from competing fragmentation/exit clocks for that PFB model. Median extinction age was about 1.94; the 99.9999% empirical quantile was about 21.99; no sampled family survived past 24.66. This is **not** a certified tail estimate, but it strongly suggests that the current `T≈70` bound leaves substantial optimisation headroom.
 
-**Interpretation:** early pruning is valuable under strong exit. This workload is
-too small to amortise cold process startup; these measurements do not demonstrate
-parallel speedup. Full banks remain useful when their cost is amortised over many
-exit comparisons. Warm-pool reuse and larger batches are next performance tests,
-not claimed features. Mac mini throughput remains unmeasured.
+No repository tests were rerun because no code changed and the branch was not materialised in the execution container; the Monte Carlo diagnostic was standalone.
 
-### Example run
+## One decision
 
-Illustrative CON model, L=1, ell=.01, c_f=2, alpha=0, c_i=20, c_e=1,
-horizon=2, seed=20260908, workers=2: T=14.273656;
-323 immigrant families; 3779 stored nodes;
-110 fragments at time zero. The analytic history mismatch bound
-is 9.999995e-07. A small bound does not certify the
-entire numerical implementation or remove Monte Carlo error.
-
-## Your 15-minute review
-
-Read MATHEMATICS.md Sections 2, 4 and 5. The scientific convention is total-rate
-c_i, positive cutoff ell, independent families, and size-based exit. The proposed
-acceptance is of the construction and bound, not a clinical fit or an asymptotic
-performance claim. Leave any mathematical objection as a PR comment.
-
-**Recommended next task:** benchmark on the Mac mini using the included runner,
-then choose between tightening T and optimising amortised bank generation. Do not
-change biological assumptions merely to improve throughput.
-
-## Handoff
-
-Only additive files in forest/ are part of this change. The next session should
-first read PR feedback and this packet, then perform one approved task. No scheduled
-agent, automatic merge, or unattended research run has been activated.
+**Should the next session prioritise deriving a materially sharper *certified* survival/lookback bound before Mac-mini performance optimisation, rather than treating the current conservative certificate as the baseline?**
