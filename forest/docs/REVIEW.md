@@ -1,27 +1,35 @@
-# Review packet 02 — certificate audit
+# Review packet 03 — sharper lookback candidate
 
-**Date:** 8 September 2026. **Scope:** mathematical audit only; no simulator code changed.
+**Date:** 9 September 2026. **Scope:** one mathematical task; no simulator code changed.
 
-## What I checked
+## What I did
 
-PR #1 remains open/draft and had no comments or submitted reviews at the start of this session. I re-derived the stationary-history argument in `MATHEMATICS.md` §§4–5, including the Poisson thinning step, the path coupling, the p-mass Lyapunov drift, and the interval lower envelope used for `kappa_p`.
+PR #1 is still open/draft and currently has no comments or review threads. Because the previous packet's decision on whether to tighten the certificate is unanswered, I investigated that question rather than moving on to Mac-mini optimisation.
+
+I derived a more general additive Lyapunov certificate. Instead of the current fixed power weight `h(x)=(x/ell)^p`, choose any `h>=1` whose one-family generator satisfies `G V_h <= -kappa V_h`. Then
+
+`P(tau_x>t) <= h(x) exp(-kappa t)`
+
+and, for uniform immigration,
+
+`Lambda_T <= C_I * mean(h(X)) * exp(-kappa T) / kappa`.
+
+This preserves the existing Poisson coupling exactly; `T` still truncates immigration history, never family lifetime.
 
 ## Main result
 
-I find the present certificate mathematically valid under its stated assumptions: `0 < ell < L`, finite rates on `[ell,L]`, independent immigrant families, and Chapter-7 total immigration rate `c_i`. In particular,
+For the benchmark PFB model (`L=1, ell=.02, C_F=2, alpha=1, C_I=100, a=b=1, B=.4, beta=-1`), uniform splitting makes the optimal-weight condition a one-dimensional ODE. Using the deliberately fixed `kappa=0.72`, the resulting analytic weight has `mean(h(X)) ≈ 356.536` and gives
 
-`Lambda_T = c_i E[(tau_X-T)_+]`
+**`T ≈ 34.20` for `delta=1e-6`, versus the current `T ≈ 70.07`.**
 
-is the mean number of omitted old families still alive at time 0, so the common-driver mismatch probability is exactly `1-exp(-Lambda_T)`. If no omitted family is alive at 0, it cannot reappear, so the same coupling controls the whole future path; `T` truncates immigration history and never forces family extinction.
+So a better certificate can cut expected pre-zero immigrant families from about 7,007 to 3,420 before touching parallelisation. The derivation is in [`TAIL_BOUND_NOTE.md`](TAIL_BOUND_NOTE.md).
 
-The implemented p-mass estimate is conservative but sound. For the benchmark PFB model (`L=1, ell=.02, c_f=2, alpha=1, c_i=100, B=.4, beta=-1`), the selected `p=4` gives `kappa≈0.47391664` and `T≈70.0673` for `delta=1e-6`, reproducing the recorded value.
+## Evidence / uncertainty
 
-## Evidence on conservatism
+The Lyapunov argument is analytic; the benchmark decimal evaluation used high-precision numerical quadrature/algebra, not Monte Carlo. I did not change `certificate.py` and did not rerun repository tests. The quoted decimals are not formal interval arithmetic, matching the numerical caveat already attached to the current certificate.
 
-As an independent diagnostic, I simulated 4,000,000 single immigrant families directly from competing fragmentation/exit clocks for that PFB model. Median extinction age was about 1.94; the 99.9999% empirical quantile was about 21.99; no sampled family survived past 24.66. This is **not** a certified tail estimate, but it strongly suggests that the current `T≈70` bound leaves substantial optimisation headroom.
-
-No repository tests were rerun because no code changed and the branch was not materialised in the execution container; the Monte Carlo diagnostic was standalone.
+This cheap ODE form currently applies to uniform splitting with `alpha=1`; the general additive-weight theorem is broader, but non-uniform Beta splitting would require a Volterra integral bound.
 
 ## One decision
 
-**Should the next session prioritise deriving a materially sharper *certified* survival/lookback bound before Mac-mini performance optimisation, rather than treating the current conservative certificate as the baseline?**
+**Approve implementing this adapted Lyapunov certificate for the uniform-split, `alpha=1` case before Mac-mini benchmarking? I recommend yes, because it approximately halves the dominant history window without changing the FRIME law.**
