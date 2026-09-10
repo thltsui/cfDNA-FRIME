@@ -1,35 +1,29 @@
-# Review packet 03 — sharper lookback candidate
+# Review packet 04 — adapted-bound robustness
 
-**Date:** 9 September 2026. **Scope:** one mathematical task; no simulator code changed.
+**Date:** 10 September 2026. **Scope:** one mathematical task; no simulator code changed.
 
 ## What I did
 
-PR #1 is still open/draft and currently has no comments or review threads. Because the previous packet's decision on whether to tighten the certificate is unanswered, I investigated that question rather than moving on to Mac-mini optimisation.
-
-I derived a more general additive Lyapunov certificate. Instead of the current fixed power weight `h(x)=(x/ell)^p`, choose any `h>=1` whose one-family generator satisfies `G V_h <= -kappa V_h`. Then
-
-`P(tau_x>t) <= h(x) exp(-kappa t)`
-
-and, for uniform immigration,
-
-`Lambda_T <= C_I * mean(h(X)) * exp(-kappa T) / kappa`.
-
-This preserves the existing Poisson coupling exactly; `T` still truncates immigration history, never family lifetime.
+PR #1 is still open/draft and has no comments or review threads. The previous decision on implementing the adapted Lyapunov certificate is therefore still unanswered, so I did not change `certificate.py` or proceed to Mac-mini optimisation. Instead I tested whether the proposed bound depends sensitively on the arbitrary choice `kappa=0.72`.
 
 ## Main result
 
-For the benchmark PFB model (`L=1, ell=.02, C_F=2, alpha=1, C_I=100, a=b=1, B=.4, beta=-1`), uniform splitting makes the optimal-weight condition a one-dimensional ODE. Using the deliberately fixed `kappa=0.72`, the resulting analytic weight has `mean(h(X)) ≈ 356.536` and gives
+For the benchmark PFB model (`L=1, ell=.02, C_F=2, alpha=1, C_I=100, a=b=1, B=.4, beta=-1`), I independently re-evaluated the ODE weight and numerically minimised its certified lookback over feasible `kappa`.
 
-**`T ≈ 34.20` for `delta=1e-6`, versus the current `T ≈ 70.07`.**
+The optimum is approximately
 
-So a better certificate can cut expected pre-zero immigrant families from about 7,007 to 3,420 before touching parallelisation. The derivation is in [`TAIL_BOUND_NOTE.md`](TAIL_BOUND_NOTE.md).
+`kappa*=0.7262776`, `bar_h=441.3875`, `T=34.18862`.
+
+The original simple choice `kappa=0.72` gives `T=34.20225`, only about `0.014` time units longer. So the earlier ~51% improvement over the current p-mass certificate (`T≈70.07`) is robust; it is not an artefact of tuning kappa.
+
+There is also a useful stability warning: this model requires `kappa<0.8`. As `kappa` approaches `0.8`, the ODE denominator becomes small near the PFB boundary and the prefactor explodes; e.g. `bar_h≈2,277` at `kappa=.76` and `≈15,660` at `.78`, worsening the final lookback despite the faster exponential rate.
+
+Full calculations are in [`TAIL_BOUND_NOTE.md`](TAIL_BOUND_NOTE.md).
 
 ## Evidence / uncertainty
 
-The Lyapunov argument is analytic; the benchmark decimal evaluation used high-precision numerical quadrature/algebra, not Monte Carlo. I did not change `certificate.py` and did not rerun repository tests. The quoted decimals are not formal interval arithmetic, matching the numerical caveat already attached to the current certificate.
-
-This cheap ODE form currently applies to uniform splitting with `alpha=1`; the general additive-weight theorem is broader, but non-uniform Beta splitting would require a Volterra integral bound.
+The check used independent root finding, numerical quadrature and scalar optimisation. No Monte Carlo was used. No simulator source changed, so repository tests were not rerun. Decimal values are ordinary floating-point numerical evidence, not formal interval arithmetic.
 
 ## One decision
 
-**Approve implementing this adapted Lyapunov certificate for the uniform-split, `alpha=1` case before Mac-mini benchmarking? I recommend yes, because it approximately halves the dominant history window without changing the FRIME law.**
+**Approve implementing the adapted certificate for uniform splitting with `alpha=1`? I recommend yes: the gain is large, the chosen kappa need not be finely tuned, and the simulator law remains unchanged.**
