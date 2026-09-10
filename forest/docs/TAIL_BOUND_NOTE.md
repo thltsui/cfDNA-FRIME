@@ -1,6 +1,6 @@
 # Research note — adapted Lyapunov lookback bound
 
-**Date:** 9 September 2026  
+**Date:** 10 September 2026  
 **Status:** mathematical candidate for review; not implemented in `certificate.py`.
 
 ## Purpose
@@ -77,8 +77,7 @@ Thus
 
 $$E(x)=\begin{cases}x^{-1}-B^{-1},&x<B,\\0,&x\ge B.\end{cases}$$
 
-Take the deliberately fixed value `kappa=0.72` (not a numerically optimised
-kappa). The `h=1` branch ends at the positive root of
+Take `kappa=0.72`. The `h=1` branch ends at the positive root of
 
 $$4(x-\ell)=2x+E(x)-0.72,$$
 
@@ -103,10 +102,42 @@ Using `T=34.21` gives the numerical upper bound `Lambda_T≈9.94e-7`. The curren
 p-mass certificate reports `T≈70.07`. Thus this adapted weight cuts the certified
 lookback by about 51% for the benchmark before any simulator optimisation.
 
-The mathematical construction above is exact. The quoted decimal values were
-computed at high precision but are not formal interval-arithmetic certificates;
-production code should retain the same numerical caveat already documented for the
-current float64 certificate, or add outward interval bounds.
+## Kappa sensitivity check
+
+Before implementation, I independently re-evaluated the ODE construction and
+optimised the resulting sufficient lookback over feasible `kappa`. For this PFB
+model the denominator `2x+E(x)-kappa` is positive over the retained interval only
+for `kappa<0.8`; approaching `0.8` makes the weight explode near the exit boundary.
+
+A one-dimensional numerical minimisation gives
+
+`kappa* ≈ 0.7262776`, `bar_h ≈ 441.3875`, `T ≈ 34.18862`.
+
+The original deliberately chosen `kappa=0.72` gives `T≈34.20225`, only about
+`0.014` time units longer. Hence there is essentially no practical benefit in
+optimising kappa aggressively. Representative values are:
+
+| kappa | bar_h | certified T |
+|---:|---:|---:|
+| 0.68 | 126.83 | 34.78 |
+| 0.70 | 200.73 | 34.40 |
+| 0.72 | 356.54 | 34.20 |
+| 0.72628 | 441.40 | 34.19 |
+| 0.74 | 760.97 | 34.27 |
+| 0.76 | 2277.01 | 34.77 |
+| 0.78 | 15659.77 | 36.32 |
+
+This also exposes the numerical danger of choosing kappa too near the theoretical
+ceiling: a slightly faster exponential rate is more than offset by a rapidly
+inflating prefactor. A production implementation should therefore use a robust
+bounded search or a conservative fixed/adaptive candidate set, and explicitly
+reject denominators that approach zero.
+
+The mathematical construction above is exact. Decimal evaluations were checked by
+independent root finding, quadrature and scalar optimisation in double precision;
+they are not formal interval-arithmetic certificates. Production code should retain
+the numerical caveat already documented for the current float64 certificate, or
+add outward interval bounds.
 
 ## Scope and next engineering question
 
