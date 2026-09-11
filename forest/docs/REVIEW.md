@@ -1,29 +1,31 @@
-# Review packet 04 — adapted-bound robustness
+# Review packet 05 — adapted-bound structural check
 
-**Date:** 10 September 2026. **Scope:** one mathematical task; no simulator code changed.
+**Date:** 11 September 2026. **Scope:** one mathematical task; no simulator code changed.
 
 ## What I did
 
-PR #1 is still open/draft and has no comments or review threads. The previous decision on implementing the adapted Lyapunov certificate is therefore still unanswered, so I did not change `certificate.py` or proceed to Mac-mini optimisation. Instead I tested whether the proposed bound depends sensitively on the arbitrary choice `kappa=0.72`.
+PR #1 remains open/draft with no comments, review submissions or review threads. The previous decision on implementing the adapted Lyapunov certificate is therefore still unanswered, so I did not modify `certificate.py` or start performance optimisation. I instead checked a structural point that would matter directly to a safe implementation: whether the proposed `max{1, ...}` ODE can switch branches repeatedly.
 
 ## Main result
 
-For the benchmark PFB model (`L=1, ell=.02, C_F=2, alpha=1, C_I=100, a=b=1, B=.4, beta=-1`), I independently re-evaluated the ODE weight and numerically minimised its certified lookback over feasible `kappa`.
+For uniform splitting and `alpha=1`, define
 
-The optimum is approximately
+`D_kappa(x)=C_F x + E(x) - kappa`, `H(x)=integral_ell^x h(y)dy`, and `g(x)=2 C_F H(x)/D_kappa(x)`.
 
-`kappa*=0.7262776`, `bar_h=441.3875`, `T=34.18862`.
+On the active ODE branch, `H'=g`, so
 
-The original simple choice `kappa=0.72` gives `T=34.20225`, only about `0.014` time units longer. So the earlier ~51% improvement over the current p-mass certificate (`T≈70.07`) is robust; it is not an artefact of tuning kappa.
+`d log(g)/dx = (C_F - E'(x))/D_kappa(x)`.
 
-There is also a useful stability warning: this model requires `kappa<0.8`. As `kappa` approaches `0.8`, the ODE denominator becomes small near the PFB boundary and the prefactor explodes; e.g. `bar_h≈2,277` at `kappa=.76` and `≈15,660` at `.78`, worsening the final lookback despite the faster exponential rate.
+The supported CON, PNB and PFB exit rates are nonincreasing, hence `E'(x)<=0` wherever differentiable. Therefore, whenever `D_kappa>0`, `g` is strictly increasing after it first reaches 1. The candidate has **at most one branch switch**: `h=1` initially, then the ODE branch forever. PFB's boundary is only a continuous kink and does not change this conclusion.
 
-Full calculations are in [`TAIL_BOUND_NOTE.md`](TAIL_BOUND_NOTE.md).
+For the benchmark PFB case, the feasibility ceiling is also analytic: `inf_x(2x+E(x))=2B=0.8`, explaining the earlier numerical condition `kappa<0.8`. The below-boundary ODE is rational and has an elementary closed form. Re-evaluating it gives `bar_h=356.53609374898` and `T=34.2022504` at `kappa=.72`, reproducing the previous numerical result without an ODE solver.
+
+Full derivation: [`TAIL_BOUND_NOTE.md`](TAIL_BOUND_NOTE.md).
 
 ## Evidence / uncertainty
 
-The check used independent root finding, numerical quadrature and scalar optimisation. No Monte Carlo was used. No simulator source changed, so repository tests were not rerun. Decimal values are ordinary floating-point numerical evidence, not formal interval arithmetic.
+This is an analytic derivation plus high-precision arithmetic for the displayed decimals. No simulator source changed, so repository tests were not rerun. The general additive-weight certificate remains unimplemented and the float64-versus-formal-interval caveat remains.
 
 ## One decision
 
-**Approve implementing the adapted certificate for uniform splitting with `alpha=1`? I recommend yes: the gain is large, the chosen kappa need not be finely tuned, and the simulator law remains unchanged.**
+**Approve implementing the adapted certificate for uniform splitting with `alpha=1`? I recommend yes: the single-switch proof removes the main structural ambiguity I would want resolved before coding it.**
