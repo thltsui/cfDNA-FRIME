@@ -1,7 +1,7 @@
 # Research note — adapted Lyapunov lookback bound
 
 **Date:** 10 September 2026  
-**Updated:** 11 September 2026  
+**Updated:** 12 September 2026  
 **Status:** mathematical candidate for review; not implemented in `certificate.py`.
 
 ## Purpose
@@ -99,6 +99,50 @@ reaches 1, then `h=1` on the whole interval.
 This removes a structural ambiguity before implementation. It also gives a clean
 feasibility condition: choose `kappa < inf_{ell<x<=L}(C_F x+E(x))`, with a
 numerical safety margin in floating-point code.
+
+### Dominance over the existing p-mass certificate
+
+The adapted construction cannot make the certified lookback worse than the current
+p-mass construction in this uniform-split, `alpha=1` regime, provided both are
+compared at the same admissible `kappa`.
+
+Let `h_0>=1` be any feasible weight for a fixed `kappa`, and write
+`H_0(x)=integral_ell^x h_0(y)dy`. Feasibility is exactly the differential
+inequality
+
+$$H_0'(x)\ge F(x,H_0(x)),\qquad
+F(x,H)=\max\left\{1,\frac{2C_FH}{D_\kappa(x)}\right\}.$$
+
+The adapted candidate `H_*` solves `H_*'=F(x,H_*)`, `H_*(ell)=0`. Since
+`D_kappa>0`, `F` is nondecreasing in its second argument. The scalar comparison
+principle therefore gives `H_*(x)<=H_0(x)` throughout the retained interval and,
+almost everywhere,
+
+$$h_*(x)=F(x,H_*(x))\le F(x,H_0(x))\le h_0(x).$$
+
+Hence `bar_h_* <= bar_h_0`.
+
+Now take the current p-mass weight `h_p(x)=(x/ell)^p`, `p>1`. With
+`m_p=E[R^p+(1-R)^p]`, cutoff only removes child contributions, so
+
+$$
+\mathbb E[h_p(xR)1_{xR>\ell}+h_p(x(1-R))1_{x(1-R)>\ell}]
+\le m_p h_p(x).
+$$
+
+Thus `h_p` is feasible for every
+
+$$\kappa\le\inf_{\ell<x\le L}\{(1-m_p)C_Fx+E(x)\}.$$
+
+At any such `kappa`, the adapted weight has no larger prefactor than `h_p`, and
+therefore no larger sufficient `T`. Optimising over feasible `kappa` can only improve
+it further. This remains true if implementation uses a conservative lower bound on
+the p-mass `kappa`, as the current interval-envelope code does.
+
+So the proposed specialised certificate is a **safe refinement**, not a competing
+approximation: in its supported regime it can fall back to the current certificate
+and, mathematically, its minimal adapted weight dominates every admissible p-mass
+candidate at the same decay rate.
 
 ## Benchmark PFB calculation
 
