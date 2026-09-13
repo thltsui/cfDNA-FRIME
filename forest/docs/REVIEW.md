@@ -1,35 +1,35 @@
-# Review packet 06 — adapted bound formally dominates p-mass
+# Review packet 07 — conservative adapted-certificate algorithm
 
-**Date:** 12 September 2026. **Scope:** one mathematical task; no simulator code changed.
+**Date:** 13 September 2026. **Scope:** one implementation-design task; no simulator source changed.
 
 ## What I did
 
-PR #1 remains open/draft with no comments or submitted reviews, so the requested approval to implement the adapted Lyapunov certificate is still unresolved. I therefore did not change `certificate.py` or begin optimisation. I checked a narrower risk instead: could the specialised adapted certificate ever give a worse lookback than the existing p-mass certificate in its supported regime?
+PR #1 remains open/draft with no comments or submitted reviews, so approval to implement the adapted Lyapunov certificate is still unresolved. I did not change `certificate.py` or start performance optimisation. Instead I addressed the remaining numerical concern from the previous review: how to implement the tighter certificate without trusting root finding or a numerical ODE near `D_kappa=0`.
 
 ## Main result
 
-**No.** For uniform splitting and `alpha=1`, fix any admissible `kappa` and define
+For uniform splitting with `alpha=1`, the existing geometric size partition gives a conservative **interval supersolution**. On each interval `[l,u]`,
 
-`F(x,H)=max{1, 2 C_F H / (C_F x + E(x) - kappa)}`.
+`D_kappa(x)=C_F x + E(x) - kappa >= d = C_F l + E(u) - kappa`.
 
-The adapted cumulative weight solves `H_*'=F(x,H_*)`, `H_*(ell)=0`. Any other feasible weight `h_0>=1`, with `H_0'=h_0`, obeys `H_0'>=F(x,H_0)`. Because `F` is nondecreasing in `H`, scalar ODE comparison yields
+Therefore the exact adapted equation
 
-`H_* <= H_0` and `h_* <= h_0` almost everywhere.
+`H'=max(1, 2 C_F H / D_kappa(x))`
 
-The current p-mass weight `h_p=(x/ell)^p` is feasible whenever
+is dominated by the constant-coefficient equation
 
-`kappa <= inf_x {(1-m_p) C_F x + E(x)}`,
+`Hhat'=max(1, (2 C_F/d) Hhat)`,
 
-because cutoff can only remove child contributions. Therefore, at every decay rate certified by a p-mass candidate, the adapted construction has no larger prefactor and hence no larger sufficient lookback `T`. Optimising `kappa` can only improve further.
+whose interval update is available in closed form. Propagating these updates gives `H_*(L) <= Hhat(L)`, so `Hhat(L)/L` is a conservative prefactor for the same Poisson-history error bound. No branch-switch root, ODE solver or quadrature is required. The current p-mass method remains a fallback.
 
-This gives a clean implementation safety rule: in the target regime the new method can be an optional refinement with the current certificate retained as fallback. It changes neither the Poisson-family law nor the meaning of `T`.
+For the existing PFB benchmark at `kappa=.72`, `delta=1e-6`, 256 geometric intervals give `T=34.8347`, versus the exact adapted value `34.2023` and the current p-mass value `70.0673`: about a **50.3% reduction** in certified lookback while retaining endpoint-envelope conservatism.
 
-Full proof: [`TAIL_BOUND_NOTE.md`](TAIL_BOUND_NOTE.md).
+Full derivation and partition-refinement table: [`INTERVAL_ADAPTED_BOUND.md`](INTERVAL_ADAPTED_BOUND.md).
 
 ## Evidence / uncertainty
 
-This is an analytic comparison argument; no Monte Carlo or new numerical claims are needed. No simulator source changed, so repository tests were not rerun. Numerical implementation still needs conservative handling near `D_kappa=0`; float64 is not formal interval arithmetic.
+The recurrence and comparison proof are analytic; the displayed benchmark values were evaluated directly in Python. No simulator source changed, so repository tests were not rerun. Float64 remains non-formal arithmetic, exactly as for the current certificate.
 
 ## One decision
 
-**Approve implementing the adapted certificate for uniform splitting with `alpha=1`, while retaining the current p-mass certificate as fallback? I recommend yes: we now have both structural simplicity and a formal no-regression result.**
+**Approve implementing this interval-supersolution certificate for uniform splitting with `alpha=1`, keeping the current p-mass certificate as fallback? I recommend yes; this removes the main numerical-implementation concern without changing the FRIME law.**
