@@ -48,7 +48,8 @@ class Exit:
         if self.kind == "pfb":
             # Stable evaluation of x**power - boundary**power near the boundary.
             rate *= -math.expm1(self.power * (math.log(self.boundary) - math.log(x)))
-        if not math.isfinite(rate) or rate < 0:
+        # Exact zero exits returned above; a computed zero here is underflow.
+        if not math.isfinite(rate) or rate <= 0:
             raise FloatingPointError("exit rate is not representable; rescale the model")
         return rate
 

@@ -59,6 +59,22 @@ CON uses `Exit('constant', c_e=...)`; PNB/PFB power exponent defaults to -1.
 For the thesis PNB/PFB normalisation use c_e=1. `ell` is a length cutoff, not a
 KS convergence tolerance. No clinically calibrated units are supplied.
 
+## Independent Monte Carlo populations
+
+Use `MonteCarlo` to generate iid population summaries with a persistent pool.
+It records each replicate's raw length histogram, count, mass, stream identity,
+resource counts and runtime, plus Monte Carlo standard errors across populations.
+The existing history tolerance is per replicate; an ensemble history bound is
+reported separately. The [mathematical/API guide](docs/MONTE_CARLO.md) explains
+chunking, reproducibility and the separate observation-model step needed for ABC.
+
+```sh
+python examples/monte_carlo.py --n 1000 --workers 4 --delta 1e-9 --output results/mc-001
+```
+
+Defaults are dimensionless; this command does not fit mtDNA data. Existing
+`sample`, `presample` and `assemble` interfaces retain their original behavior.
+
 ## Pre-sample and stitch
 
 In a script, inside its `if __name__ == '__main__':` block:
@@ -103,8 +119,8 @@ clocks or split endpoints raise rather than silently altering the stochastic law
 GPU/compiled kernels, persistent on-disk tree banks, cross-size/time retiming,
 clock-integrated stationary-mean estimation, arbitrary immigration distributions,
 clinical fitting, and perfect infinite-past sampling. This is a tested reference
-implementation before optimisation, not a production release or a claim of
-measured Mac mini speedup.
+implementation before optimisation, not a production release. Local Mac mini benchmark evidence is saved under
+ignored results; performance depends on workload and process-pool reuse.
 
 Official implementation references:
 - NumPy parallel random generation: https://numpy.org/doc/stable/reference/random/parallel.html

@@ -1,35 +1,26 @@
-# Review packet 07 — conservative adapted-certificate algorithm
+# FRIME LOCAL REPORT — independent population Monte Carlo
 
-**Date:** 13 September 2026. **Scope:** one implementation-design task; no simulator source changed.
+**Date:** 14 September 2026. **Objective:** provide iid FRIME population Monte Carlo as the simulator component of eventual ABC against mtDNA data.
 
-## What I did
+## What changed
 
-PR #1 remains open/draft with no comments or submitted reviews, so approval to implement the adapted Lyapunov certificate is still unresolved. I did not change `certificate.py` or start performance optimisation. Instead I addressed the remaining numerical concern from the previous review: how to implement the tighter certificate without trusting root finding or a numerical ODE near `D_kappa=0`.
+- Added `MonteCarlo` / `monte_carlo`: independent replicate streams, persistent family workers, raw per-population histograms/counts/masses, and replicate-level Monte Carlo SEs.
+- Kept the existing finite-history law and p-mass certificate. The interface reports the ensemble history bound separately; changing chunk size does not change a replicate.
+- Added an executable example saving JSON/NPZ provenance. Workers transfer summaries rather than complete genealogies.
+- Fixed the previously observed positive-exit underflow to raise explicitly. Exact zero exits remain valid. No clinical or legacy source changed.
 
-## Main result
+## Evidence
 
-For uniform splitting with `alpha=1`, the existing geometric size partition gives a conservative **interval supersolution**. On each interval `[l,u]`,
+All **84 tests passed in 4.87 s**. Checks include direct full-population replay, worker/batch/order/chunk invariance, empty populations, explicit failure on caps, and analytic moments with L=2 to detect immigration-normalization mistakes.
 
-`D_kappa(x)=C_F x + E(x) - kappa >= d = C_F l + E(u) - kappa`.
+For 20 PFB populations per run, median total time over three seeds was **3.495 s** with the original serial full-population interface, **1.071 s** with four persistent summary workers, and **0.743 s** with ten. Ranges: 3.476–3.495, 1.066–1.154, and .742–.882 s. Histograms, counts and masses match the recorded reference streams exactly. The first parallel ensemble includes pool startup; later ensembles reuse the pool. Comparison includes different output/IPC paths, not an isolated speedup from worker count alone.
 
-Therefore the exact adapted equation
+Three independent 1,000-population ensembles in each mode were compared with the analytic uniform-split, constant-rate profile. Across bin/count/mass summaries, max absolute standardized error was **3.743 MCSE**, below the predeclared six-MCSE threshold. Modes share root seeds and are coupled; there are three independent ensembles per mode, not six mutually independent ensembles. This is validation evidence, not a proof of law equality.
 
-`H'=max(1, 2 C_F H / D_kappa(x))`
+Detailed results and reproduction driver: ignored `forest/results/monte-carlo-20260914/`. Source hashes/status are recorded because these measurements preceded the commit. The mathematical/API guide is [MONTE_CARLO.md](MONTE_CARLO.md).
 
-is dominated by the constant-coefficient equation
+## Interpretation and next scientific decision
 
-`Hhat'=max(1, (2 C_F/d) Hhat)`,
+For fixed theta and T, the API generates `U_1,...,U_R iid ~ Law(U_(theta,T))`. Monte Carlo SE concerns replicate variation; `1-exp(-R*lambda_bound)` concerns history omission. The existing mtDNA file has 13 chrM sample profiles. Alignment to those observations requires an explicit observation kernel `Y|U`, length window and binning convention; sequencing read count is not automatically biological population abundance.
 
-whose interval update is available in closed form. Propagating these updates gives `H_*(L) <= Hhat(L)`, so `Hhat(L)/L` is a conservative prefactor for the same Poisson-history error bound. No branch-switch root, ODE solver or quadrature is required. The current p-mass method remains a fallback.
-
-For the existing PFB benchmark at `kappa=.72`, `delta=1e-6`, 256 geometric intervals give `T=34.8347`, versus the exact adapted value `34.2023` and the current p-mass value `70.0673`: about a **50.3% reduction** in certified lookback while retaining endpoint-envelope conservatism.
-
-Full derivation and partition-refinement table: [`INTERVAL_ADAPTED_BOUND.md`](INTERVAL_ADAPTED_BOUND.md).
-
-## Evidence / uncertainty
-
-The recurrence and comparison proof are analytic; the displayed benchmark values were evaluated directly in Python. No simulator source changed, so repository tests were not rerun. Float64 remains non-formal arithmetic, exactly as for the current certificate.
-
-## One decision
-
-**Approve implementing this interval-supersolution certificate for uniform splitting with `alpha=1`, keeping the current p-mass certificate as fallback? I recommend yes; this removes the main numerical-implementation concern without changing the FRIME law.**
+**For the first mtDNA comparison, condition on each sample's mtDNA read depth and assess its fragment-length distribution? I recommend this as the initial observation target; adopting a specific sampling/detection kernel remains a scientific decision.** ABC itself, priors and discrepancy thresholds are not implemented. The adapted certificate remains deferred pending explicit approval.

@@ -6,10 +6,10 @@ and neither ChatGPT nor this repository is currently configured to run it daily.
 
 ## State
 
-Current deliverable: Poisson forest v0.1, described in REVIEW.md.
+Current deliverable: iid population Monte Carlo with persistent family workers, described in REVIEW.md and MONTE_CARLO.md.
 Scientific basis: MATHEMATICS.md, with thesis-derived assumptions distinguished
 from subsequent derivations. Current code/test evidence: TEST_RESULTS.txt.
-Next candidate task: Mac mini benchmark and amortised precomputation measurement.
+Completed: Mac mini baseline and Monte Carlo validation. Next scientific task: agree the mtDNA observation target and length/normalization conventions before ABC.
 
 ## Per-session instruction
 
@@ -28,12 +28,11 @@ exist. Resource caps must cause explicit failure, not biased partial samples.
 
 ## Near-term queue (not a promised timetable)
 
-1. Human review of the model conventions and truncation certificate.
-2. Mac mini benchmark with recorded chip, memory, Python/NumPy and cold/warm timings.
-3. Improve worker batching / persistent pools if measurements justify it.
-4. Evaluate tighter survival bounds in representative parameter regimes.
-5. Add the separate clock-integrated mean estimator for fitting, without confusing
-   it with the random stationary process.
+1. Agree the mtDNA observation model and summary/discrepancy target.
+2. Validate the resulting data adapter against the unchanged frequency tables.
+3. Design ABC priors and synthetic-data recovery checks before clinical fitting.
+4. Implement the adapted history certificate only after explicit approval.
+5. Keep clock-integrated mean estimation separate from random-population Monte Carlo.
 
 The immediate task is implementation review. Scheduling can be activated only
 through a real runner with verified repository access and a confirmed schedule.
