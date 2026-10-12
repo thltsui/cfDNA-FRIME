@@ -6,3 +6,12 @@ Main ABC output audit: all 13 consistency checks passed.
 Additional analytic projection validation: 300 populations at each of two cutoffs; max absolute analytic deviation 2.178 MCSE. No seeds rerun to improve statistical results.
 Detailed records: forest/results/abc-pilot-20261012/
 Historical test/benchmark evidence remains in Git history and forest/results/.
+
+
+2026-10-12 Beta immigration and frozen sensitivity executor
+Code commit 10ac6a33b9254afa82fcc58cdf1679aabe416677
+Python 3.14.3; NumPy 2.5.3; macOS Apple M4, 10 cores, 16 GiB.
+135 passed in 20.61s. Six 300-population analytic checks: maximum absolute discrepancy 2.48084 MCSE.
+1,800 populations; 153,247 families; 1,057,901 generated nodes; 8.89s summed simulation time.
+JSON means, expected values, MCSEs, seeds, models and certificates: results/immigration-sensitivity-20261012/validation.json
+Complete 4,000-proposal preflight stopped before screening: 546 proposals exceed the 100,000-family cap. No proposals filtered.

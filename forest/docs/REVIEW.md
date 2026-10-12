@@ -1,31 +1,31 @@
 # FRIME LOCAL REPORT — 12 October 2026
 
-
 Objective:
-Test whether random stationary FRIME populations can reproduce the 13 observed mtDNA length profiles through ABC.
+Compare whether Beta immigration explains S04's length profile without a negative fragmentation exponent.
 
 What ran:
-- Separate profile fits: 256 calibration draws and 2,048 independent production proposals, using a shared prior-predictive bank.
-- One synthetic recovery check and 100 fresh posterior-predictive populations per profile, including the synthetic dataset.
-- Repeatability check: 100 fresh populations at each of the ten closest settings for S04, the largest sample; eight sequencing draws per population.
+- Implemented normalized Beta immigrant lengths, retaining total C_I and a conservative p-mass history certificate.
+- Ran the complete suite, including 1,800 independent populations for six analytic mean checks and worker/batch reproducibility checks.
+- Froze 1,000 proposals for each of four cases and calculated every history certificate before screening.
+- Updated draft PR #1 with the latest completed work; no merge.
 
 Main result:
-The ABC pipeline works, but close mtDNA alignment is not established. No production proposal matched a real profile within a binned-CDF gap of 0.05. S04's best single match was 0.0817; repeating its ten closest settings left mean-CDF gaps of 0.092–0.129. In the synthetic check, the true boundary B=500 bp gave posterior median 517 bp and a 95% interval of 365–810 bp. The other three parameters remained weakly identified.
+Beta immigration is implemented and validated, but the four-case mtDNA screening has not run. Its original rate prior fails the prospective resource check: 271/1,000 negative-alpha uniform cases and 275/1,000 negative-alpha Beta cases exceed 100,000 historical families. The worst proposal requires about 31.6 million families; the complete screen would require an expected 763.6 million. The entire plan stopped before population sampling, with no proposals filtered. This is a computational limitation, not evidence of poor mtDNA fit.
 
 Evidence:
-- Runtime: 15.27 minutes for inference, predictive checks and candidate repeats, using eight workers on the M4 Mac mini.
-- Scale: 4,705 populations; 16,235,987 immigrant families; 1,702,018,055 generated nodes.
-- Seeds/repeats: root 20261012 with disjoint stage/population streams; 100 fresh populations per predictive profile and per fixed candidate.
-- Tests: 99 passed in 10.12 seconds; output consistency audit passed. Additional 600-population analytic projection check showed deviations within 2.18 MCSE.
-- Simulation commit: 9398870c4a3e68fc15b2d4631792fb6a8c9994e1. Raw data unchanged. Per-population history delta=1e-10; whole-study coupling budget <=4.705e-7.
+- Runtime: full suite 20.61 seconds; all-proposal preflight 1.49 seconds on the 10-core M4 Mac mini, 16 GiB RAM.
+- Scale: 1,800 analytic-validation populations, 153,247 families and 1,057,901 generated nodes; largest analytic discrepancy 2.48 Monte Carlo SE.
+- Seeds/repeats: frozen screening root 2026101202; validation has six fixed independent 300-population ensembles. Detailed seeds, means and uncertainty are recorded locally.
+- Tests: 135 passed; Python 3.14.3, NumPy 2.5.3.
+- Code commit: 10ac6a33b9254afa82fcc58cdf1679aabe416677. Clinical data and legacy code unchanged.
 
 Interpretation:
-The simulator and inference machinery are usable. The fit captures a length scale, but the fitted profiles tend to miss long fragments: in 10/13 samples, the observed fraction above 5 kb exceeds the estimated 97.5th predictive percentile. This is a descriptive check, not a formal model rejection. Broad predictive bands do not establish close agreement.
+The old immigration prior is expressed per boundary-fragmentation time. With negative alpha, large fragments split much more slowly; maintaining the same arrival rate can make population histories extremely costly. Raising caps or discarding those settings would not be an acceptable bounded study.
 
 Uncertainty / blocker:
-The pilot fixes PFB exit, uniform splitting/immigration and equal fragment detectability. ABC tolerances are coarse (0.128–0.241 for real profiles). The search was finite and restricted; its results do not rule out FRIME. Absolute biological timescales are not identified. The additional diagnostic had one startup failure before any population returned; the wrapper was fixed and the same seeds rerun, with both records preserved.
+The screening prior needs an explicit scientific decision. A common prior on expected observable abundance is a possible alternative, but changes finite-population variability and still needs its own complete resource preflight. No new posterior or biological conclusion is available. The earlier restricted ABC pilot did not reproduce the original thesis fitted regimes.
 
 Decision for me:
-Approve a bounded S04 sensitivity study allowing alpha_F<0 and weaker exit e<0.5? I recommend it because the most repeatable candidates lie near these prior limits, before introducing another biological mechanism.
+Use a common expected observable population-size prior, log-Uniform(100,10,000), for all four cases? I recommend this interpretable comparison, subject to a fresh resource check before any production simulations.
 
-Protocol: [ABC_PILOT.md](ABC_PILOT.md). Detailed local output: `forest/results/abc-pilot-20261012/`; plots: `predictive-cdfs.png`, `largest-profile.png`, `synthetic-recovery.png`. Earlier Monte Carlo and benchmark evidence remains in the corresponding ignored results folders and Git history.
+Protocol: [IMMIGRATION_SENSITIVITY.md](IMMIGRATION_SENSITIVITY.md). Local records: `forest/results/immigration-sensitivity-20261012/`. Prior ABC results remain in `forest/results/abc-pilot-20261012/` and Git history.

@@ -6,10 +6,14 @@ and neither ChatGPT nor this repository is currently configured to run it daily.
 
 ## State
 
-Current deliverable: the completed exploratory mtDNA ABC pilot, described in REVIEW.md and ABC_PILOT.md; iid population Monte Carlo remains documented in MONTE_CARLO.md.
-Scientific basis: MATHEMATICS.md, with thesis-derived assumptions distinguished
-from subsequent derivations. Current code/test evidence: TEST_RESULTS.txt.
-Completed: Mac mini baseline, Monte Carlo validation, and a bounded ABC pilot with synthetic recovery, fresh predictive checks and S04 candidate repeats. Close real-data alignment is not established. The next scientific decision is whether to expand the pilot parameter support for a bounded sensitivity study.
+Current deliverable: validated Beta immigration and a frozen four-case S04
+sensitivity runner; see REVIEW.md and IMMIGRATION_SENSITIVITY.md.
+Scientific basis: MATHEMATICS.md. Code/test evidence: TEST_RESULTS.txt.
+Completed: Mac mini baseline, iid Monte Carlo, restricted ABC pilot, Beta engine
+validation and the complete sensitivity resource preflight. The latter stopped
+before screening: 546/4000 planned settings exceed the family cap. No costly
+proposals were filtered. Close mtDNA alignment remains unestablished.
+The existing draft PR #1 includes completed work and stays unmerged.
 
 ## Per-session instruction
 
@@ -26,13 +30,21 @@ report the blocker. Do not silently choose an answer or generate another backlog
 Do not claim that tests, experiments or scheduling ran unless execution records
 exist. Resource caps must cause explicit failure, not biased partial samples.
 
-## Near-term queue (not a promised timetable)
+## Current bounded task
 
-1. Obtain a decision on a bounded S04 sensitivity study across alpha<0 and e<0.5.
-2. Predeclare its ranges and certificate/work budgets before simulation; do not silently filter costly proposals.
-3. Keep the current observation kernel explicitly provisional; interpret sensitivity separately from a new posterior or biological validation.
-4. Implement the adapted history certificate only after explicit approval.
-5. Keep clock-integrated mean estimation separate from random-population Monte Carlo.
+The user authorized Beta-vs-uniform immigration crossed with both signs of alpha,
+1,000 screening draws per case and fresh candidate repeats. Implementation and
+validation are complete. The original rate prior fails the resource preflight.
 
-The current bounded task is complete; the next scientific sensitivity study awaits a decision. Scheduling can be activated only
-through a real runner with verified repository access and a confirmed schedule.
+A scientific decision is pending: whether to use a common expected observable
+abundance prior log-Uniform(100,10000). This is a new prior, not a change of time
+units. Do not silently adopt it, alter the parameter ranges, filter costly draws,
+or increase work caps to launch the original sweep. If authorized, implement and
+validate its deterministic prior map, then preflight the entire revised plan.
+That mean calculation would parameterize immigration only; simulations must
+still produce random FRIME populations. It does not guarantee a cheaper run.
+
+Keep the current observation law explicitly provisional. The earlier pilot
+excluded all four original thesis fitted model/parameter combinations and is not
+a replication or refutation of them. Adapted history certificates remain
+unapproved research notes. No recurring runner has been activated.

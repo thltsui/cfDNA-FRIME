@@ -62,3 +62,18 @@ From forest/:
 The script refuses overwritten stages or a change in scientific source, input
 data or frozen plan between stages. Worker count is an execution setting; the
 family-indexed random streams do not depend on it.
+
+## Measured first execution, 12 October 2026
+
+Code 10ac6a33b9254afa82fcc58cdf1679aabe416677 passed 135 tests in 20.61 seconds.
+The six analytic checks generated 1,800 independent populations; the largest
+mean discrepancy was 2.48 Monte Carlo SE. The complete 4,000-proposal resource
+check took 1.49 seconds and stopped before screening. Uniform-negative had 271
+proposals above the 100,000-family cap; Beta-negative had 275. Neither positive
+case exceeded it. The largest planned population required 31.64 million families,
+and the full screen required an expected 763.59 million families.
+
+These are prospective work counts, not generated populations or goodness-of-fit
+results. Full records and validation uncertainty are in ignored
+`results/immigration-sensitivity-20261012/`. A revised abundance prior has been
+proposed to the user but has not been adopted or simulated.
