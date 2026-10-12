@@ -10,7 +10,7 @@ and [the mathematical specification](docs/MATHEMATICS.md).
 Independent binary Beta fragmentation families; inherited size-dependent exit
 pruning; Poisson immigration; an explicit moment-based stationary history bound;
 reproducible process-parallel generation; frozen time queries; and three exit
-families (CON, PNB, PFB). Uniform immigration on [0,L] is the current scope.
+families (CON, PNB, PFB). Uniform and scaled Beta immigration on [0,L] are supported.
 
 **Two modes:** `lazy` generates only the genealogy needed up to the observation
 horizon and prunes early. `skeleton` generates complete size-truncated pure trees
@@ -55,6 +55,9 @@ print(forest.plan.certificate)
 
 `c_i` means TOTAL immigration intensity, following Chapter 7. Some Chapter 6
 formulae use `c_i L`; convert deliberately when reproducing old settings.
+Use `Immigration("beta", a=4, b=1)` as the `Model.immigration` field for
+`X/L~Beta(4,1)`; import `Immigration` from `frime_forest`. Its shapes are separate
+from the fragmentation ratio. The default and Beta(1,1) retain uniform behavior.
 CON uses `Exit('constant', c_e=...)`; PNB/PFB power exponent defaults to -1.
 For the thesis PNB/PFB normalisation use c_e=1. `ell` is a length cutoff, not a
 KS convergence tolerance. No clinically calibrated units are supplied.
@@ -81,7 +84,10 @@ The bounded [ABC pilot](docs/ABC_PILOT.md) fits separate length profiles using
 random FRIME populations plus an explicit multinomial read model. It includes
 independent tolerance calibration, synthetic recovery and fresh posterior
 prediction. The [current research report](docs/REVIEW.md) records measured
-agreement and limitations. Pilot execution does not establish biological fit.
+agreement and limitations. Pilot execution does not establish biological fit. The authorized
+[immigration sensitivity study](docs/IMMIGRATION_SENSITIVITY.md) compares Beta and
+uniform immigration with both signs of the fragmentation exponent. Its resource
+preflight must pass before screening begins.
 
 ## Pre-sample and stitch
 
@@ -97,10 +103,10 @@ forest = assemble(plan, bank, workers=2)
 The tree and Poisson streams are separate even with the same root seed. A larger
 pre-generated iid bank is also valid; only its first N entries are consumed.
 Do not pick trees by their survival outcomes, recycle entries, or assemble a bank
-of fixed-root test trees under the uniform-immigration certificate. For paired
+of fixed-root test trees under a random-immigration certificate. For paired
 exit comparisons, make a new plan for the new model's certificate, extend the iid
 bank if needed, and reuse trees only across, not within, populations. Such paired
-outputs are correlated. Fragmentation parameters must stay unchanged in v0.1.
+outputs are correlated. Fragmentation parameters and the immigrant root law must stay unchanged.
 
 ## Reproducibility and resource safety
 
