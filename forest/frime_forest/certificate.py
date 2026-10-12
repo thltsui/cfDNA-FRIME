@@ -23,6 +23,7 @@ class Certificate:
     lambda_bound: float
     mismatch_bound: float
     intervals: int
+    prefactor_method: str = "uniform_truncated_moment"
 
 
 def contraction(a: float, b: float, p: int) -> float:
@@ -69,7 +70,20 @@ def certify(model: Model, delta: float = 1e-6, *, powers=(2, 3, 4, 6, 8),
         kappa *= 1 - 1e-12
         if not math.isfinite(kappa) or kappa <= 0:
             raise FloatingPointError("positive decay bound is not representable")
-        log_A = p*log_ratio - math.log(p+1) + math.log(-math.expm1(-(p+1)*log_ratio))
+        method = "uniform_truncated_moment"
+        if model.immigration.is_uniform:
+            log_A = p*log_ratio - math.log(p+1) + math.log(-math.expm1(-(p+1)*log_ratio))
+        else:
+            # Full root moment dominates its restriction to roots above ell.
+            ai, bi = model.immigration.a, model.immigration.b
+            logs = [(math.log(ai+j), math.log(ai+bi+j)) for j in range(p)]
+            log_A = p*log_ratio + math.fsum(left-right for left,right in logs)
+            scale = 1 + abs(p*log_ratio) + math.fsum(abs(left)+abs(right) for left,right in logs)
+            # Upward margin, not a formal interval-arithmetic certificate.
+            log_A = math.nextafter(log_A + 1e-12*scale, math.inf)
+            if not math.isfinite(log_A):
+                raise FloatingPointError("immigration moment bound is not representable")
+            method = "beta_full_moment_upper_bound"
         if model.c_i == 0:
             T, lam = 0.0, 0.0
         else:
@@ -80,6 +94,8 @@ def certify(model: Model, delta: float = 1e-6, *, powers=(2, 3, 4, 6, 8),
                 raise FloatingPointError("lookback overflows; rescale the model")
             T = float(np.nextafter(T, math.inf))
             lam = math.exp(log_B - kappa*T)
+            if not math.isfinite(lam) or lam <= 0:
+                raise FloatingPointError("positive history bound under/overflows")
         candidates.append(Certificate(model, delta, T, p, kappa, log_A, lam,
-                                      -math.expm1(-lam), intervals))
+                                      -math.expm1(-lam), intervals, method))
     return min(candidates, key=lambda c: c.T)

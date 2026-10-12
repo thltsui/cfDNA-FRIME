@@ -16,7 +16,7 @@ import subprocess
 from time import perf_counter
 
 import numpy as np
-from frime_forest import Exit, Model, MonteCarlo
+from frime_forest import Exit, Immigration, Model, MonteCarlo
 
 
 def command(args, cwd=None):
@@ -79,6 +79,7 @@ def main():
     if args.model_json:
         fields = json.loads(args.model_json.read_text())
         fields['exit'] = Exit(**fields.get('exit', {}))
+        fields['immigration'] = Immigration(**fields.get('immigration', {}))
         model = Model(**fields)
     else:
         model = Model(c_i=100, ell=.02, alpha=1, exit=Exit('pfb', power=-1, boundary=.4))

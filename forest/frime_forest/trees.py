@@ -75,7 +75,7 @@ class Skeleton:
 
     def prune(self, model: Model) -> Family:
         if model.fragmentation_key() != self.fragmentation_key:
-            raise ValueError("skeleton fragmentation parameters differ; only exit/c_i may change")
+            raise ValueError("skeleton fragmentation parameters or immigrant law differ; only exit/c_i may change")
         n = len(self.sizes)
         reachable = np.zeros(n, dtype=bool)
         splits_alive = np.zeros(n, dtype=bool)
@@ -100,7 +100,7 @@ def make_skeleton(model: Model, family_id: int, seed: int, *, root_size: float |
                   max_nodes: int = 1_000_000) -> Skeleton:
     max_nodes = integer(max_nodes, "max_nodes", 1)
     rng = rng_for(seed, family_id, 1)
-    x0 = float(rng_for(seed, family_id, 2).uniform(0, model.L)) if root_size is None else finite(root_size, "root_size")
+    x0 = model.sample_root(rng_for(seed, family_id, 2)) if root_size is None else finite(root_size, "root_size")
     if not 0 <= x0 <= model.L:
         raise ValueError("root_size must lie in [0,L]")
     sizes, births, splits, parents, marks = [], [], [], [], []
@@ -137,7 +137,7 @@ def make_family(model: Model, family_id: int, seed: int, horizon: float, *,
         raise ValueError("horizon must be nonnegative")
     max_nodes = integer(max_nodes, "max_nodes", 1)
     rng = rng_for(seed, family_id, 1)
-    x0 = float(rng_for(seed, family_id, 2).uniform(0, model.L))
+    x0 = model.sample_root(rng_for(seed, family_id, 2))
     sizes, births, ends, parents = [], [], [], []
     stack = [(x0, 0.0, -1)] if x0 > model.ell else []
     while stack:

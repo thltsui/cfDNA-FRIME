@@ -147,6 +147,8 @@ def assemble(plan: Plan, bank: tuple[Skeleton, ...], *, workers: int = 1, batch_
     if len(bank) < len(plan.arrivals):
         raise ValueError("bank exhausted: generate more independent trees, do not recycle")
     chosen = bank[:len(plan.arrivals)]
+    if any(s.fragmentation_key != plan.model.fragmentation_key() for s in chosen):
+        raise ValueError("bank fragmentation parameters or immigrant law differ")
     if len({s.family_id for s in chosen}) != len(chosen):
         raise ValueError("duplicate family IDs would reuse randomness within a population")
     families = _map_batches(plan.model, 0, enumerate(chosen), "prune", workers,

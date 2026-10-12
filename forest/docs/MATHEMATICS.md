@@ -17,7 +17,7 @@ bound, a path-coupling guarantee, and analytic validation identities. These are
 extensions worked out for this implementation, not quotations from the thesis.
 
 Use the **Chapter 7 convention**: `c_i` is TOTAL immigration intensity. Equation
-(7.5) gives intensity `c_i p_I(x) dx dt`, with `p_I=1/L` here. Chapter 6's algorithm
+(7.5) gives intensity `c_i p_I(x) dx dt`, with normalized `p_I`; the default is `p_I=1/L`. Chapter 6's algorithm
 elsewhere uses `c_i L`; do not transfer numerical rate settings between conventions
 without conversion. No old programme behaviour overrides this specification.
 
@@ -26,7 +26,10 @@ without conversion. No old programme behaviour overrides this specification.
 For `0 < ell < L < infinity`, retain fragments of size `x > ell`. A fragment splits
 at rate `rho(x)=c_f x^alpha`, `c_f>0`, into `xr` and `x(1-r)` with independent
 `r~Beta(a,b)`, `a,b>0`. Descendants evolve independently. Immigration is a Poisson
-process with rate `c_i>=0`, independently marked by sizes uniform on `[0,L]`.
+process with rate `c_i>=0`, independently marked by sizes uniform on `[0,L]`
+(default), or `X=LQ`, `Q~Beta(a_I,b_I)`, with positive finite immigration shapes.
+These are separate from the split-ratio shapes `a,b`. Roots below the cutoff
+remain empty families; the root law is never conditioned on passing the cutoff.
 Sizes never grow and there is no interaction between fragments or families.
 
 Exit rate `E(x)` is one of:
@@ -67,7 +70,9 @@ The pure skeleton is generated in depth-first, parent-before-child order.
 Generating all trees before immigration times does not alter their joint law,
 provided trees and immigration marks are independent. Each bank tree must be used
 once within a population. Reusing a bank for paired parameter comparisons is
-allowed but creates correlated outputs, not independent replicates.
+allowed but creates correlated outputs, not independent replicates. The bank
+compatibility key includes the immigrant law: a bank drawn under one root
+distribution cannot silently be assembled under another.
 
 A fragment is present at age u precisely when its ancestors split before exit
 and `b_v <= u < min(s_v,k_v)`. `Forest.at(t)` is deterministic and never draws new
@@ -132,6 +137,17 @@ For uniform X, define
 
 $$A_p=\mathbb E[(X/\ell)^p 1_{X>\ell}]
 =\frac{L^{p+1}-\ell^{p+1}}{(p+1)L\ell^p}.$$
+
+For Beta immigration, the implementation uses the conservative full-moment bound
+
+$$A_p\leq\bar A_p=(L/\ell)^p\frac{B(a_I+p,b_I)}{B(a_I,b_I)}
+=(L/\ell)^p\prod_{j=0}^{p-1}\frac{a_I+j}{a_I+b_I+j}.$$
+
+It evaluates the integer-moment product in log space and substitutes bar A_p
+for A_p below. This includes below-cutoff mass in the upper bound, not in the
+observable population. The exact uniform expression and seeded root draws are
+preserved for Beta(1,1). The drift rate kappa_p is independent of the immigrant
+law. The numerical margin is not a formal interval-arithmetic certificate.
 
 Then
 
