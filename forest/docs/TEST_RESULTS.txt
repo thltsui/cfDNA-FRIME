@@ -1,8 +1,8 @@
-............................................................             [100%]
-============================= slowest 5 durations ==============================
-2.77s call     tests/test_distributions.py::test_uniform_constant_rate_stationary_histograms
-1.23s call     tests/test_distributions.py::test_stationary_mean_without_exit
-0.85s call     tests/test_forest.py::test_worker_and_batch_invariance[lazy]
-0.77s call     tests/test_forest.py::test_worker_and_batch_invariance[skeleton]
-0.76s call     tests/test_forest.py::test_parallel_pruning_of_precomputed_bank
-60 passed in 8.29s
+12 October 2026 — scientific source committed as 9398870
+Full suite: 99 passed in 10.12s
+Python 3.14.3; NumPy 2.5.3; pytest 9.1.1; Apple M4 Mac mini.
+New checks cover multinomial count weighting, no-read outcomes, fixed acceptance, data binning/rounding, stream separation, cap-error propagation and marked-tree projection with ancestor pruning.
+Main ABC output audit: all 13 consistency checks passed.
+Additional analytic projection validation: 300 populations at each of two cutoffs; max absolute analytic deviation 2.178 MCSE. No seeds rerun to improve statistical results.
+Detailed records: forest/results/abc-pilot-20261012/
+Historical test/benchmark evidence remains in Git history and forest/results/.

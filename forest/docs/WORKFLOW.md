@@ -6,10 +6,10 @@ and neither ChatGPT nor this repository is currently configured to run it daily.
 
 ## State
 
-Current deliverable: iid population Monte Carlo with persistent family workers, described in REVIEW.md and MONTE_CARLO.md.
+Current deliverable: the completed exploratory mtDNA ABC pilot, described in REVIEW.md and ABC_PILOT.md; iid population Monte Carlo remains documented in MONTE_CARLO.md.
 Scientific basis: MATHEMATICS.md, with thesis-derived assumptions distinguished
 from subsequent derivations. Current code/test evidence: TEST_RESULTS.txt.
-Completed: Mac mini baseline and Monte Carlo validation. Next scientific task: agree the mtDNA observation target and length/normalization conventions before ABC.
+Completed: Mac mini baseline, Monte Carlo validation, and a bounded ABC pilot with synthetic recovery, fresh predictive checks and S04 candidate repeats. Close real-data alignment is not established. The next scientific decision is whether to expand the pilot parameter support for a bounded sensitivity study.
 
 ## Per-session instruction
 
@@ -28,11 +28,11 @@ exist. Resource caps must cause explicit failure, not biased partial samples.
 
 ## Near-term queue (not a promised timetable)
 
-1. Agree the mtDNA observation model and summary/discrepancy target.
-2. Validate the resulting data adapter against the unchanged frequency tables.
-3. Design ABC priors and synthetic-data recovery checks before clinical fitting.
+1. Obtain a decision on a bounded S04 sensitivity study across alpha<0 and e<0.5.
+2. Predeclare its ranges and certificate/work budgets before simulation; do not silently filter costly proposals.
+3. Keep the current observation kernel explicitly provisional; interpret sensitivity separately from a new posterior or biological validation.
 4. Implement the adapted history certificate only after explicit approval.
 5. Keep clock-integrated mean estimation separate from random-population Monte Carlo.
 
-The immediate task is implementation review. Scheduling can be activated only
+The current bounded task is complete; the next scientific sensitivity study awaits a decision. Scheduling can be activated only
 through a real runner with verified repository access and a confirmed schedule.

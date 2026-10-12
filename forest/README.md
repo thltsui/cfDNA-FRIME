@@ -75,6 +75,14 @@ python examples/monte_carlo.py --n 1000 --workers 4 --delta 1e-9 --output result
 Defaults are dimensionless; this command does not fit mtDNA data. Existing
 `sample`, `presample` and `assemble` interfaces retain their original behavior.
 
+## Exploratory mtDNA ABC
+
+The bounded [ABC pilot](docs/ABC_PILOT.md) fits separate length profiles using
+random FRIME populations plus an explicit multinomial read model. It includes
+independent tolerance calibration, synthetic recovery and fresh posterior
+prediction. The [current research report](docs/REVIEW.md) records measured
+agreement and limitations. Pilot execution does not establish biological fit.
+
 ## Pre-sample and stitch
 
 In a script, inside its `if __name__ == '__main__':` block:
@@ -118,7 +126,7 @@ clocks or split endpoints raise rather than silently altering the stochastic law
 
 GPU/compiled kernels, persistent on-disk tree banks, cross-size/time retiming,
 clock-integrated stationary-mean estimation, arbitrary immigration distributions,
-clinical fitting, and perfect infinite-past sampling. This is a tested reference
+validated biological inference, and perfect infinite-past sampling. This is a tested reference
 implementation before optimisation, not a production release. Local Mac mini benchmark evidence is saved under
 ignored results; performance depends on workload and process-pool reuse.
 

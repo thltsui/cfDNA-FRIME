@@ -1,26 +1,31 @@
-# FRIME LOCAL REPORT — independent population Monte Carlo
+# FRIME LOCAL REPORT — 12 October 2026
 
-**Date:** 14 September 2026. **Objective:** provide iid FRIME population Monte Carlo as the simulator component of eventual ABC against mtDNA data.
 
-## What changed
+Objective:
+Test whether random stationary FRIME populations can reproduce the 13 observed mtDNA length profiles through ABC.
 
-- Added `MonteCarlo` / `monte_carlo`: independent replicate streams, persistent family workers, raw per-population histograms/counts/masses, and replicate-level Monte Carlo SEs.
-- Kept the existing finite-history law and p-mass certificate. The interface reports the ensemble history bound separately; changing chunk size does not change a replicate.
-- Added an executable example saving JSON/NPZ provenance. Workers transfer summaries rather than complete genealogies.
-- Fixed the previously observed positive-exit underflow to raise explicitly. Exact zero exits remain valid. No clinical or legacy source changed.
+What ran:
+- Separate profile fits: 256 calibration draws and 2,048 independent production proposals, using a shared prior-predictive bank.
+- One synthetic recovery check and 100 fresh posterior-predictive populations per profile, including the synthetic dataset.
+- Repeatability check: 100 fresh populations at each of the ten closest settings for S04, the largest sample; eight sequencing draws per population.
 
-## Evidence
+Main result:
+The ABC pipeline works, but close mtDNA alignment is not established. No production proposal matched a real profile within a binned-CDF gap of 0.05. S04's best single match was 0.0817; repeating its ten closest settings left mean-CDF gaps of 0.092–0.129. In the synthetic check, the true boundary B=500 bp gave posterior median 517 bp and a 95% interval of 365–810 bp. The other three parameters remained weakly identified.
 
-All **84 tests passed in 4.87 s**. Checks include direct full-population replay, worker/batch/order/chunk invariance, empty populations, explicit failure on caps, and analytic moments with L=2 to detect immigration-normalization mistakes.
+Evidence:
+- Runtime: 15.27 minutes for inference, predictive checks and candidate repeats, using eight workers on the M4 Mac mini.
+- Scale: 4,705 populations; 16,235,987 immigrant families; 1,702,018,055 generated nodes.
+- Seeds/repeats: root 20261012 with disjoint stage/population streams; 100 fresh populations per predictive profile and per fixed candidate.
+- Tests: 99 passed in 10.12 seconds; output consistency audit passed. Additional 600-population analytic projection check showed deviations within 2.18 MCSE.
+- Simulation commit: 9398870c4a3e68fc15b2d4631792fb6a8c9994e1. Raw data unchanged. Per-population history delta=1e-10; whole-study coupling budget <=4.705e-7.
 
-For 20 PFB populations per run, median total time over three seeds was **3.495 s** with the original serial full-population interface, **1.071 s** with four persistent summary workers, and **0.743 s** with ten. Ranges: 3.476–3.495, 1.066–1.154, and .742–.882 s. Histograms, counts and masses match the recorded reference streams exactly. The first parallel ensemble includes pool startup; later ensembles reuse the pool. Comparison includes different output/IPC paths, not an isolated speedup from worker count alone.
+Interpretation:
+The simulator and inference machinery are usable. The fit captures a length scale, but the fitted profiles tend to miss long fragments: in 10/13 samples, the observed fraction above 5 kb exceeds the estimated 97.5th predictive percentile. This is a descriptive check, not a formal model rejection. Broad predictive bands do not establish close agreement.
 
-Three independent 1,000-population ensembles in each mode were compared with the analytic uniform-split, constant-rate profile. Across bin/count/mass summaries, max absolute standardized error was **3.743 MCSE**, below the predeclared six-MCSE threshold. Modes share root seeds and are coupled; there are three independent ensembles per mode, not six mutually independent ensembles. This is validation evidence, not a proof of law equality.
+Uncertainty / blocker:
+The pilot fixes PFB exit, uniform splitting/immigration and equal fragment detectability. ABC tolerances are coarse (0.128–0.241 for real profiles). The search was finite and restricted; its results do not rule out FRIME. Absolute biological timescales are not identified. The additional diagnostic had one startup failure before any population returned; the wrapper was fixed and the same seeds rerun, with both records preserved.
 
-Detailed results and reproduction driver: ignored `forest/results/monte-carlo-20260914/`. Source hashes/status are recorded because these measurements preceded the commit. The mathematical/API guide is [MONTE_CARLO.md](MONTE_CARLO.md).
+Decision for me:
+Approve a bounded S04 sensitivity study allowing alpha_F<0 and weaker exit e<0.5? I recommend it because the most repeatable candidates lie near these prior limits, before introducing another biological mechanism.
 
-## Interpretation and next scientific decision
-
-For fixed theta and T, the API generates `U_1,...,U_R iid ~ Law(U_(theta,T))`. Monte Carlo SE concerns replicate variation; `1-exp(-R*lambda_bound)` concerns history omission. The existing mtDNA file has 13 chrM sample profiles. Alignment to those observations requires an explicit observation kernel `Y|U`, length window and binning convention; sequencing read count is not automatically biological population abundance.
-
-**For the first mtDNA comparison, condition on each sample's mtDNA read depth and assess its fragment-length distribution? I recommend this as the initial observation target; adopting a specific sampling/detection kernel remains a scientific decision.** ABC itself, priors and discrepancy thresholds are not implemented. The adapted certificate remains deferred pending explicit approval.
+Protocol: [ABC_PILOT.md](ABC_PILOT.md). Detailed local output: `forest/results/abc-pilot-20261012/`; plots: `predictive-cdfs.png`, `largest-profile.png`, `synthetic-recovery.png`. Earlier Monte Carlo and benchmark evidence remains in the corresponding ignored results folders and Git history.
