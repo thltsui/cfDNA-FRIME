@@ -52,3 +52,14 @@ def test_nonuniform_splitting_and_invalid_target_refused():
     for x in (0,-1,np.inf,np.nan):
         with pytest.raises(ValueError):
             with_expected_abundance(Model(),x)
+
+
+def test_endpoint_skewed_pfb_mapping_refines_without_dropping_proposal():
+    model=Model(L=1,ell=39.5/16569,c_f=4.872867071407471,alpha=1.3696659613003457,
+                exit=Exit('pfb',c_e=.2521476538551626,power=-1,boundary=.3146625327097934),
+                immigration=Immigration('beta',a=4.872913956030791,b=.5651010491898656))
+    coefficient=abundance_coefficient(model)
+    tightened=abundance_coefficient(model,rtol=2e-11)
+    assert coefficient.value==pytest.approx(tightened.value,rel=2e-8)
+    assert len(coefficient.refinement_history)>=2
+    assert coefficient.refinement_history[0]>2e-7

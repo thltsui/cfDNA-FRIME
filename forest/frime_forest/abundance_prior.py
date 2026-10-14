@@ -19,6 +19,8 @@ class AbundanceCoefficient:
     requested_rtol: float
     ode_evaluations: int
     scipy_version: str
+    final_rtol: float
+    refinement_history: tuple[float, ...]
     method: str = 'DOP853 in log length; endpoint-weighted QUADPACK; tenfold refinement'
 
 
@@ -95,12 +97,21 @@ def abundance_coefficient(model: Model, *, rtol=2e-8) -> AbundanceCoefficient:
     finite(rtol,'rtol',positive=True)
     if not 1e-12<=rtol<=1e-4:
         raise ValueError('rtol must be between 1e-12 and 1e-4')
-    coarse,_,n1=_integrate(model,rtol)
-    fine,error,n2=_integrate(model,rtol/10)
-    discrepancy=abs(coarse-fine)/fine
-    if discrepancy>10*rtol or error/fine>10*rtol:
-        raise FloatingPointError('abundance mapping failed numerical refinement')
-    return AbundanceCoefficient(fine,error,discrepancy,rtol,n1+n2,scipy.__version__)
+    coarse,_,evaluations=_integrate(model,rtol)
+    history=[]
+    for step in range(1,5):
+        fine_rtol=rtol/(10**step)
+        if fine_rtol<1e-13:
+            break
+        fine,error,n=_integrate(model,fine_rtol)
+        evaluations+=n
+        discrepancy=abs(coarse-fine)/fine
+        history.append(discrepancy)
+        if discrepancy<=10*rtol and error/fine<=10*rtol:
+            return AbundanceCoefficient(fine,error,discrepancy,rtol,evaluations,
+                                        scipy.__version__,fine_rtol,tuple(history))
+        coarse=fine
+    raise FloatingPointError('abundance mapping failed numerical refinement: '+repr(history))
 
 
 def with_expected_abundance(model: Model, expected_count: float, *, rtol=2e-8):
