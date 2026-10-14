@@ -76,4 +76,30 @@ and the full screen required an expected 763.59 million families.
 These are prospective work counts, not generated populations or goodness-of-fit
 results. Full records and validation uncertainty are in ignored
 `results/immigration-sensitivity-20261012/`. A revised abundance prior has been
-proposed to the user but has not been adopted or simulated.
+proposed to the user; the revised plan below was authorized on 14 October.
+
+## Approved abundance prior, 14 October 2026
+
+The full four-case screen uses mu=E|U_W| log-uniform on [100,10000] in every
+case. W is the observable window above 39.5 bp, not the biological 1 bp window.
+The intensity is total C_I=mu/K, where K is expected integrated observable
+family count. The normalized immigration density includes roots below cutoff;
+it is not conditioned on retention. This shared abundance prior replaces the
+old rate prior for a new separately seeded plan; the old plan remains intact.
+
+For uniform splitting let h=rho+E, V(x)=integral_ell^x v(y)dy. Then
+v=1/h+2*rho*V/(x*h). Setting W=V/x^2 and t=log(x/ell) gives
+dW/dt=1/(x*h)-2*E*W/h, W(ell)=0. Finally K=integral p_I(x)v(x)dx.
+`abundance_prior.py` solves this stable scalar equation in log length, splitting
+at the PFB boundary, and integrates the Beta density with endpoint-aware
+quadrature. Every coefficient is checked with tenfold tighter tolerances;
+quadrature estimates and refinement discrepancies are saved. They are numerical
+diagnostics, not rigorous interval error bounds. SciPy is an optional `abc`
+dependency. Analytic no-exit and constant-exit checks cover both root laws.
+
+This calculation only defines the prior coordinate. Screening and confirmation
+still generate independent random Poisson-forest populations with the existing
+p-mass certificate. It is not a deterministic mean fit. The mean count is a
+latent abundance/dispersion parameter, not an estimate of plasma concentration.
+Engineering caps may be raised prospectively after the entire plan is inspected;
+no row is filtered and any realized cap failure remains explicit.

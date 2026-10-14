@@ -95,3 +95,31 @@ def test_resource_preflight_does_not_keep_affordable_subset(study,monkeypatch,pl
     assert (out/'check-FAILED.json').exists()
     assert not (out/'check-complete.json').exists()
     assert not list(out.glob('*-runs.jsonl'))
+
+
+def test_abundance_plan_has_shared_coordinate_and_records_mapping(study):
+    pytest.importorskip('scipy')
+    planner=importlib.import_module('plan_immigration_sensitivity')
+    plan=planner.make_plan(2,2026101401,'abundance',50000000,250000000)
+    assert len(plan['rows'])==8
+    assert 'immigration' not in plan['prior']
+    assert plan['prior']['expected_observable_count']==['log_uniform',100,10000]
+    assert len({r['case'] for r in plan['rows']})==4
+    for row in plan['rows']:
+        target=row['theta']['expected_observable_count']
+        assert 100<=target<=10000
+        assert row['model']['c_i']*row['abundance_mapping']['value']==pytest.approx(target)
+        assert row['theta']['immigration']==row['model']['c_i']
+        assert row['abundance_mapping']['refinement_relative_difference']<=2e-7
+    assert plan==planner.make_plan(2,2026101401,'abundance',50000000,250000000)
+
+
+def test_original_rate_plan_remains_separate(study):
+    planner=importlib.import_module('plan_immigration_sensitivity')
+    plan=planner.make_plan(2,2026101202)
+    assert plan['immigration_prior']=='rate'
+    assert plan['prior']['immigration']==['log_uniform',10,100]
+    for row in plan['rows']:
+        assert 10<=row['model']['c_i']<=100
+        assert 'abundance_mapping' not in row
+        assert 'expected_observable_count' not in row['theta']

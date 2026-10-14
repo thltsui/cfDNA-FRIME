@@ -12,6 +12,7 @@ dependencies = ["numpy>=1.24"]
 [project.optional-dependencies]
 test = ["pytest>=7"]
 plots = ["matplotlib>=3.8"]
+abc = ["scipy>=1.11"]
 
 [tool.setuptools.packages.find]
 include = ["frime_forest*"]
