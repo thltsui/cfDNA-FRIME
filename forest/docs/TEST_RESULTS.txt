@@ -15,3 +15,16 @@ Python 3.14.3; NumPy 2.5.3; macOS Apple M4, 10 cores, 16 GiB.
 1,800 populations; 153,247 families; 1,057,901 generated nodes; 8.89s summed simulation time.
 JSON means, expected values, MCSEs, seeds, models and certificates: results/immigration-sensitivity-20261012/validation.json
 Complete 4,000-proposal preflight stopped before screening: 546 proposals exceed the 100,000-family cap. No proposals filtered.
+
+2026-10-14 Approved abundance-prior ABC screen and confirmation
+Scientific code: 4d99ff47b2f8ae1b77fe3f7b38eb808fcefe74e7
+158 passed in 21.69s; Python 3.14.3; NumPy 2.5.3; SciPy 1.18.1.
+New checks: analytic occupation integrals (Uniform/Beta roots, positive/negative alpha, constant/no exit), rate rescaling, tighter-tolerance refinement, prior reproducibility, one-ULP PFB boundary stability.
+All 4000 prior maps completed without filtering; max accepted relative refinement discrepancy 9.0286e-8.
+Production: 4000 screening plus 1200 confirmation populations, zero failures or replacements.
+Root seed 2026101401; eight persistent workers; batch 128. Both stage exit codes 0.
+223516196 immigrant families; 21416967014 generated nodes; 11431.955194 seconds driver wall time.
+Sampled aggregate peak RSS 812482560 bytes. Per-population history tolerance 1e-10; study union bound <=5.2e-7.
+Audited source/data/plan hashes, complete proposal/repeat coverage, unique population/read streams, NPZ/JSONL counts and candidate/tail summaries.
+Raw evidence: results/immigration-sensitivity-20261014/ (ignored). All 12 confirmed candidates retained in analysis tables.
+Mathematical audit: NEGATIVE_ALPHA_NOTE.md distinguishes positive-cutoff simulation from weak zero-cutoff PDE convergence and dust flux; no simulator model changed.

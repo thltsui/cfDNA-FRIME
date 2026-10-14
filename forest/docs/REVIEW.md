@@ -1,31 +1,30 @@
-# FRIME LOCAL REPORT — 12 October 2026
+# FRIME LOCAL REPORT — 14 October 2026
 
 Objective:
-Compare whether Beta immigration explains S04's length profile without a negative fragmentation exponent.
+Test whether Beta immigrant lengths can explain S04's mtDNA profile without negative fragmentation exponents.
 
 What ran:
-- Implemented normalized Beta immigrant lengths, retaining total C_I and a conservative p-mass history certificate.
-- Ran the complete suite, including 1,800 independent populations for six analytic mean checks and worker/batch reproducibility checks.
-- Froze 1,000 proposals for each of four cases and calculated every history certificate before screening.
-- Updated draft PR #1 with the latest completed work; no merge.
+- Four frozen cases: positive/negative alpha_F crossed with uniform/Beta immigration, 1,000 proposals each.
+- Three candidates per case, each with 100 fresh random populations and read draws.
+- Full tests, resource probes, provenance audit and a review of negative-alpha PDE convergence against the thesis.
 
 Main result:
-Beta immigration is implemented and validated, but the four-case mtDNA screening has not run. Its original rate prior fails the prospective resource check: 271/1,000 negative-alpha uniform cases and 275/1,000 negative-alpha Beta cases exceed 100,000 historical families. The worst proposal requires about 31.6 million families; the complete screen would require an expected 763.6 million. The entire plan stopped before population sampling, with no proposals filtered. This is a computational limitation, not evidence of poor mtDNA fit.
+All 5,200 populations completed without failures or replaced proposals. The best displayed negative-alpha/Beta candidate has alpha_F=-0.9602 and a maximum discrepancy between its mean read CDF and the observed CDF of 2.44 percentage points. Corresponding best displayed discrepancies are 4.00 points for negative/uniform, 9.45 for positive/uniform and 9.64 for positive/Beta. All 100 fresh draws for the best candidate had individual CDF distance <=0.05. However, a systematic residual remains: at 2,520 bp the 2.44-point mean discrepancy has Monte Carlo SE 0.087 points. This is improved alignment, not a demonstrated adequate observation model.
 
 Evidence:
-- Runtime: full suite 20.61 seconds; all-proposal preflight 1.49 seconds on the 10-core M4 Mac mini, 16 GiB RAM.
-- Scale: 1,800 analytic-validation populations, 153,247 families and 1,057,901 generated nodes; largest analytic discrepancy 2.48 Monte Carlo SE.
-- Seeds/repeats: frozen screening root 2026101202; validation has six fixed independent 300-population ensembles. Detailed seeds, means and uncertainty are recorded locally.
-- Tests: 135 passed; Python 3.14.3, NumPy 2.5.3.
-- Code commit: 10ac6a33b9254afa82fcc58cdf1679aabe416677. Clinical data and legacy code unchanged.
+- Runtime: 190.53 minutes total; sampled aggregate peak RSS 775 MiB, on the 10-core M4 Mac mini, 16 GiB RAM.
+- Scale: 223,516,196 immigrant families; 21,416,967,014 generated nodes; eight persistent workers, batches of 128.
+- Seeds/repeats: root 2026101401; 4,000 screening populations plus 12 x 100 fresh candidate populations. No streams reused.
+- Tests: 158 passed in 21.69 seconds; Python 3.14.3, NumPy 2.5.3, SciPy 1.18.1.
+- Scientific commit: 4d99ff47b2f8ae1b77fe3f7b38eb808fcefe74e7. Per-population history tolerance 1e-10; study union bound <=5.2e-7.
 
 Interpretation:
-The old immigration prior is expressed per boundary-fragmentation time. With negative alpha, large fragments split much more slowly; maintaining the same arrival rate can make population histories extremely costly. Raising caps or discarding those settings would not be an acceptable bounded study.
+Within the tested priors and observation law, negative-alpha cases found substantially closer candidates. Beta immigration improved the best confirmed candidate but did not remove the preference seen in this screen for negative alpha. Candidates below -1 also fit reasonably; the best is above -1. These results do not estimate a reliable posterior probability of alpha_F<-1 or identify a biological mechanism.
 
 Uncertainty / blocker:
-The screening prior needs an explicit scientific decision. A common prior on expected observable abundance is a possible alternative, but changes finite-population variability and still needs its own complete resource preflight. No new posterior or biological conclusion is available. The earlier restricted ABC pilot did not reproduce the original thesis fitted regimes.
+One target, restricted exit/splitting laws, selected candidates and in-sample comparisons. Display choices use confirmation results, so intervals are descriptive and do not adjust for selection. A singular zero-cutoff density need not invalidate equilibrium; dust flux and the topology of convergence require separate care. The implemented positive-cutoff model is unchanged. This study does not replicate or refute the original thesis fits.
 
 Decision for me:
-Use a common expected observable population-size prior, log-Uniform(100,10,000), for all four cases? I recommend this interpretable comparison, subject to a fresh resource check before any production simulations.
+Should the next study check these candidate regimes against additional mtDNA profiles before narrowing alpha_F? I recommend yes, with the observation law and discrepancy fixed beforehand.
 
-Protocol: [IMMIGRATION_SENSITIVITY.md](IMMIGRATION_SENSITIVITY.md). Local records: `forest/results/immigration-sensitivity-20261012/`. Prior ABC results remain in `forest/results/abc-pilot-20261012/` and Git history.
+Details: [protocol/results](IMMIGRATION_SENSITIVITY.md), [negative-alpha audit](NEGATIVE_ALPHA_NOTE.md). Raw records and plots: `forest/results/immigration-sensitivity-20261014/`. [Draft PR #1](https://github.com/thltsui/cfDNA-FRIME/pull/1) remains unmerged.

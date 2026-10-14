@@ -103,3 +103,108 @@ p-mass certificate. It is not a deterministic mean fit. The mean count is a
 latent abundance/dispersion parameter, not an estimate of plasma concentration.
 Engineering caps may be raised prospectively after the entire plan is inspected;
 no row is filtered and any realized cap failure remains explicit.
+
+## Completed full screen, 14 October 2026
+
+Scientific source: `4d99ff47b2f8ae1b77fe3f7b38eb808fcefe74e7`. Frozen root seed
+`2026101401`. All 4,000 settings passed the revised preflight; all 5,200 random
+populations completed, with no resource failures, no-read outcomes, skipped rows
+or replacements. Screening and confirmation streams are disjoint; all recorded
+latent-population and read streams are unique. Source, plan, data, histogram and
+summary consistency checks passed.
+
+The shared prior is on expected observable count, not fixed total immigration
+rate; this affects finite-population variability and is part of the scientific
+specification. Its deterministic mapping used tolerance refinement and retained
+all 4,000 draws. One difficult mapping required additional refinement; no draw
+was filtered. The largest accepted relative refinement discrepancy was 9.03e-8.
+
+The target has 5,572 reads with none excluded. The discrepancy D is the maximum
+absolute difference of the read and observed CDFs at the fixed bin edges. The
+table's displayed candidate is selected **after confirmation**, by the smallest
+maximum gap of the confirmation mean CDF. This is a descriptive display rule,
+not an independently validated model-selection procedure. All 12 candidates are
+retained in the local tables.
+
+| Case | Screen D<=.05/.10/.15, out of 1,000 | Display ID | alpha_F | Mean-CDF max gap | Median individual D | Fresh D<=.05 |
+|---|---|---:|---:|---:|---:|---:|
+| Positive, uniform | 0 / 2 / 17 | 115 | 0.01720 | 0.09451 | 0.11181 | 0/100 |
+| Positive, Beta | 0 / 0 / 10 | 1303 | 0.08123 | 0.09635 | 0.12078 | 0/100 |
+| Negative, uniform | 2 / 65 / 199 | 2532 | -0.63220 | 0.04000 | 0.04684 | 70/100 |
+| Negative, Beta | 6 / 75 / 195 | 3269 | -0.96017 | 0.02437 | 0.03033 | 100/100 |
+
+Marginal Wilson 95% intervals for the last column are [0,.0370] for 0/100,
+[.6042,.7811] for 70/100, and [.9630,1] for 100/100. These intervals condition on
+candidate parameters and do not account for the subsequent display selection.
+Neither the threshold nor the screen acceptance ratio is a calibrated test or a
+posterior model probability. With only six negative-Beta and two negative-uniform
+screen acceptances at D<=.05, this is not a precise posterior inference for alpha.
+
+Candidate 3269 has B=1,214.41 bp, e=0.92843, a_I=1.61794, b_I=2.95466,
+mu=8,577.88 and total C_I=280.12894 in the rho(B)=1 gauge. Its mean predicted
+tail fractions, observed fractions and Monte Carlo SEs are:
+
+| Length | Observed | Predictive mean | MCSE of mean | Pointwise 95% predictive interval |
+|---|---:|---:|---:|---:|
+| >1 kb | .71877 | .73440 | .000804 | [.71855,.74881] |
+| >5 kb | .24390 | .24026 | .000781 | [.22555,.25540] |
+| >10 kb | .04864 | .05078 | .000354 | [.04494,.05746] |
+
+There is still a systematic residual: at 2,520 bp, the mean CDF differs by
+0.024370 with MCSE 0.000872. The observed CDF is below the pointwise 2.5%
+predictive quantile there. Pointwise intervals are not simultaneous bands and
+do not supply a calibrated goodness-of-fit p-value. The best negative-uniform
+candidate has a heavier >10 kb tail (.08863).
+
+Negative-Beta candidates 3243 (alpha=-1.34455) and 3034 (alpha=-1.48029) also
+give close but imperfect predictions: mean-CDF gaps .03369/.04174 and 66/63 of
+100 populations with D<=.05. Their conditional Wilson intervals are
+[.5628,.7454]/[.5322,.7182]. The best displayed exponent is above -1; this study
+does not establish alpha<-1 as a threshold or identify a biological mechanism.
+The Beta input improves the best candidate, but screen rates 75/1000 versus
+65/1000 at D<=.10 do not establish a decisive case-wide advantage.
+
+### Execution and artifacts
+
+The production stages ran from 08:12:06 to 11:22:38 UTC on 14 October:
+
+| Stage | Wall seconds | Families | Generated nodes |
+|---|---:|---:|---:|
+| Screen | 7,301.40 | 138,423,518 | 13,619,278,301 |
+| Confirmation | 4,129.57 | 85,092,678 | 7,797,688,713 |
+| Total driver | 11,431.96 | 223,516,196 | 21,416,967,014 |
+
+Eight persistent family workers, batch size 128, M4 Mac mini with 10 cores and
+16 GiB RAM. Sampled aggregate peak RSS was 812,482,560 bytes (775 MiB), not an
+exact OS high-water mark. Full suite: 158 passed in 21.69s; Python 3.14.3,
+NumPy 2.5.3, SciPy 1.18.1. Per-population history delta=1e-10; the union bound
+over this adaptively selected 5,200-population study is <=5.2e-7. This controls
+omitted immigration history only, not observation error, ABC approximation,
+prior-map numerical error or parameter uncertainty.
+
+The complete plan was inspected before prospectively setting engineering caps
+to 50 million families, 1 million nodes per family and 250 million generated
+nodes per population. Ten resource-probe settings plus two 4/8-worker replays
+were checked before production. Replays reproduced histograms and counts.
+Resource caps were never reached by the production run.
+
+All outputs are local and ignored under `results/immigration-sensitivity-20261014/`:
+`abundance-plan.json`, `execution.json`, `tests.xml`, `validation-summary.json`,
+resource-probe records, stage logs, and `full-screen/` with complete JSONL/NPZ
+records. Analysis outputs are `full-screen/analysis/four-case-predictive-cdfs.png`,
+`case-summary.csv`, `all-candidates.csv`, `all-candidate-tails.csv`,
+`displayed-candidate-tails.csv`, `analysis.json` and `INTERPRETATION.txt`.
+The local `analyze.py` recomputes these summaries without new simulations.
+
+Reproduction uses the saved, fully specified plan and fresh output directories:
+
+```sh
+.venv/bin/python examples/immigration_sensitivity.py --stage check --plan results/immigration-sensitivity-20261014/abundance-plan.json --output results/reproduction
+.venv/bin/python examples/immigration_sensitivity.py --stage screen --output results/reproduction --workers 8 --batch-size 128
+.venv/bin/python examples/immigration_sensitivity.py --stage confirm --output results/reproduction --workers 8 --batch-size 128
+```
+
+Read [NEGATIVE_ALPHA_NOTE.md](NEGATIVE_ALPHA_NOTE.md) for the mathematical audit.
+Negative alpha is allowed by the thesis's weak stationary framework. A singular
+zero-cutoff density and dust flux require care; they do not invalidate these
+positive-cutoff simulations. No production mathematical convention was changed.

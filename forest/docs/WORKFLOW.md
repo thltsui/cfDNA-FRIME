@@ -1,50 +1,46 @@
 # Daily research handoff — proposed, not activated
 
-Suggested local review time: 20:30–20:45 Europe/London. A future scheduled runner
-should produce the review packet beforehand. This document is not a scheduler,
-and neither ChatGPT nor this repository is currently configured to run it daily.
+Suggested local review time: 20:30–20:45 Europe/London. This document is not a
+scheduler; no recurring runner has been activated.
 
 ## State
 
-Current deliverable: validated Beta immigration and a frozen four-case S04
-sensitivity runner; see REVIEW.md and IMMIGRATION_SENSITIVITY.md.
-Scientific basis: MATHEMATICS.md. Code/test evidence: TEST_RESULTS.txt.
-Completed: Mac mini baseline, iid Monte Carlo, restricted ABC pilot, Beta engine
-validation and the complete sensitivity resource preflight. The latter stopped
-before screening: 546/4000 planned settings exceed the family cap. No costly
-proposals were filtered. Close mtDNA alignment remains unestablished.
-The existing draft PR #1 includes completed work and stays unmerged.
+Completed: Mac mini baseline, iid Monte Carlo, restricted ABC pilot, Beta
+immigration validation and the full four-case S04 sensitivity study. The user
+approved the common expected observable abundance prior on 14 October after the
+original rate-prior plan stopped at resource preflight. The revised frozen plan
+completed all 4,000 screening and 1,200 candidate populations, with no failed or
+replaced proposals. Scientific source was fixed at 4d99ff4 throughout.
+
+Read REVIEW.md for the concise report, IMMIGRATION_SENSITIVITY.md for protocol
+and measured results, TEST_RESULTS.txt for validation, and NEGATIVE_ALPHA_NOTE.md
+for the zero-cutoff mathematical audit. MATHEMATICS.md remains the production
+model specification. The draft PR #1 is open and unmerged.
 
 ## Per-session instruction
 
-Read the current FRIME draft PR, review comments, docs/REVIEW.md and
-MATHEMATICS.md. Resolve human feedback before beginning new work. Complete at
-most one approved task. Preserve the model; propose scientific changes before
-implementing them. Run the relevant tests and report the actual environment.
-Update one concise review packet with objective, change, evidence, uncertainty
-and at most one decision for Terence. Keep raw logs separate. Work only on the
-feature branch; never auto-merge, publish clinical claims, or alter legacy data.
+Read the current draft PR and review comments before beginning new work. Complete
+at most one approved task. Preserve the model; propose scientific changes before
+implementing them. Run relevant tests and report the actual environment. Update
+one concise review packet with evidence, uncertainty and at most one consequential
+decision. Keep raw outputs in ignored results/. Work on the feature branch; never
+auto-merge, publish clinical claims or alter legacy data.
 
-If an unanswered scientific decision blocks progress, examine that question or
-report the blocker. Do not silently choose an answer or generate another backlog.
-Do not claim that tests, experiments or scheduling ran unless execution records
-exist. Resource caps must cause explicit failure, not biased partial samples.
+Do not claim experiments or scheduling ran without execution records. Resource
+caps must fail explicitly; never filter expensive or failed proposals and treat
+the remainder as iid. Do not create a backlog of unreviewed implementations.
 
 ## Current bounded task
 
-The user authorized Beta-vs-uniform immigration crossed with both signs of alpha,
-1,000 screening draws per case and fresh candidate repeats. Implementation and
-validation are complete. The original rate prior fails the resource preflight.
+The approved full screen is complete. The best displayed candidate has negative
+alpha and Beta immigration, but retains a systematic CDF residual. The study
+does not establish a biological mechanism, posterior model odds, or a threshold
+at alpha_F=-1. Display choices were selected using confirmation results; these
+are descriptive in-sample comparisons.
 
-A scientific decision is pending: whether to use a common expected observable
-abundance prior log-Uniform(100,10000). This is a new prior, not a change of time
-units. Do not silently adopt it, alter the parameter ranges, filter costly draws,
-or increase work caps to launch the original sweep. If authorized, implement and
-validate its deterministic prior map, then preflight the entire revised plan.
-That mean calculation would parameterize immigration only; simulations must
-still produce random FRIME populations. It does not guarantee a cheaper run.
-
-Keep the current observation law explicitly provisional. The earlier pilot
-excluded all four original thesis fitted model/parameter combinations and is not
-a replication or refutation of them. Adapted history certificates remain
-unapproved research notes. No recurring runner has been activated.
+Keep the observation law provisional and distinguish this study from the thesis
+fits, whose exit regimes differ. Finite positive cutoff remains part of the
+model. Zero-cutoff PDE asymptotics are an audited research note, not a change to
+the simulator or its history certificate. Adapted certificates remain unapproved.
+The next proposed scientific decision is validation across additional profiles;
+no new study or recurring task has been started.
