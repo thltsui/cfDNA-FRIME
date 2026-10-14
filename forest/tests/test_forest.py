@@ -193,3 +193,13 @@ def test_parallel_pruning_of_precomputed_bank():
 def test_worker_validation(workers):
     with pytest.raises(ValueError):
         sample(Model(c_i=0),workers=workers)
+
+
+@pytest.mark.parametrize('boundary',[0.02245180605672634,0.4,1.])
+def test_pfb_exit_one_float_below_boundary(boundary):
+    x=float(np.nextafter(boundary,0.))
+    exit=Exit('pfb',c_e=2.,power=-1.,boundary=boundary)
+    # For power -1 this algebraic expression avoids subtracting equal logs.
+    exact=2.*(boundary-x)/(x*boundary)
+    assert exit.rate(x,1.)==pytest.approx(exact,rel=2e-14,abs=0.)
+    assert exit.rate(boundary,1.)==0.
