@@ -1,30 +1,30 @@
 # FRIME LOCAL REPORT — 14 October 2026
 
 Objective:
-Test whether Beta immigrant lengths can explain S04's mtDNA profile without negative fragmentation exponents.
+Check whether negative alpha_F is consistently supported across mtDNA profiles, allowing Beta immigration and retaining the finite destruction cutoff.
 
 What ran:
-- Four frozen cases: positive/negative alpha_F crossed with uniform/Beta immigration, 1,000 proposals each.
-- Three candidates per case, each with 100 fresh random populations and read draws.
-- Full tests, resource probes, provenance audit and a review of negative-alpha PDE convergence against the thesis.
+- Screened the other 12 profiles against the complete 4,000-population bank; retained S04 as a reference.
+- Generated 48,000 new multinomial read draws at each profile's actual depth; no new latent populations were needed.
+- Compared positive/negative alpha with uniform/Beta immigration at the three frozen tolerances .05, .10 and .15; audited every distance and acceptance summary.
 
 Main result:
-All 5,200 populations completed without failures or replaced proposals. The best displayed negative-alpha/Beta candidate has alpha_F=-0.9602 and a maximum discrepancy between its mean read CDF and the observed CDF of 2.44 percentage points. Corresponding best displayed discrepancies are 4.00 points for negative/uniform, 9.45 for positive/uniform and 9.64 for positive/Beta. All 100 fresh draws for the best candidate had individual CDF distance <=0.05. However, a systematic residual remains: at 2,520 bp the 2.44-point mean discrepancy has Monte Carlo SE 0.087 points. This is improved alignment, not a demonstrated adequate observation model.
+Negative alpha is favoured in several profiles, but not all. At D<=.10 with Beta immigration, negative/positive acceptances are S01: 5/25; S05: 1/19; S06: 37/1; S07: 46/1; S08: 29/0; S09: 41/0. Each sign had 1,000 proposals. Their accepted-alpha medians are +.27, +.85, -.71, -.51, -.85 and -.82, respectively. S04 remains 75/0 with median -1.00. The broad S01/S05 versus S06--S09 contrast persists with uniform immigration and at D<=.15. At .05 most profiles have too few acceptances for useful alpha inference.
 
 Evidence:
-- Runtime: 190.53 minutes total; sampled aggregate peak RSS 775 MiB, on the 10-core M4 Mac mini, 16 GiB RAM.
-- Scale: 223,516,196 immigrant families; 21,416,967,014 generated nodes; eight persistent workers, batches of 128.
-- Seeds/repeats: root 2026101401; 4,000 screening populations plus 12 x 100 fresh candidate populations. No streams reused.
-- Tests: 158 passed in 21.69 seconds; Python 3.14.3, NumPy 2.5.3, SciPy 1.18.1.
-- Scientific commit: 4d99ff47b2f8ae1b77fe3f7b38eb808fcefe74e7. Per-population history tolerance 1e-10; study union bound <=5.2e-7.
+- Runtime: marginal screen and input audit 4.87 seconds; this reuses the previous 121.69-minute population screen.
+- Scale: 13 profiles, 52,000 profile-level outcomes from 4,000 unique latent populations; new profiles contain 50--894 reads versus S04's 5,572.
+- Seeds/repeats: new read seed 2026101402; original population seed 2026101401. No new candidate confirmations or repeated latent simulations in this extension.
+- Tests: 161 passed in 22.59 seconds. All bank hashes, new distances, acceptance counts and alpha summaries audited; original S04 results preserved.
+- Commit: screen code 6df5d25; latent-bank scientific source 4d99ff4. Approximate joint forward-history bound 4e-7 applies to the shared bank, not the conditional posterior.
 
 Interpretation:
-Within the tested priors and observation law, negative-alpha cases found substantially closer candidates. Beta immigration improved the best confirmed candidate but did not remove the preference seen in this screen for negative alpha. Candidates below -1 also fit reasonably; the best is above -1. These results do not estimate a reliable posterior probability of alpha_F<-1 or identify a biological mechanism.
+The screen suggests profile variation, not a demonstrated universal alpha or proven biological heterogeneity. The thesis slope relation beta=-alpha_F-2 permits negative alpha: its reported mtDNA slope -1.56 corresponds to alpha_F=-.44. Beta immigration generally modifies that relation, so slope alone no longer identifies alpha_F.
 
 Uncertainty / blocker:
-One target, restricted exit/splitting laws, selected candidates and in-sample comparisons. Display choices use confirmation results, so intervals are descriptive and do not adjust for selection. A singular zero-cutoff density need not invalidate equilibrium; dust flux and the topology of convergence require separate care. The implemented positive-cutoff model is unchanged. This study does not replicate or refute the original thesis fits.
+Sparse accepted samples, tolerance dependence, different read depths and possible observation-model mismatch. Cross-profile Monte Carlo errors are correlated through the shared bank. Accepted-alpha quantiles are finite-tolerance ABC summaries, not calibrated confidence intervals. No joint shared-alpha model was fitted.
 
 Decision for me:
-Should the next study check these candidate regimes against additional mtDNA profiles before narrowing alpha_F? I recommend yes, with the observation law and discrepancy fixed beforehand.
+Should the next bounded study independently confirm the contrasting S01/S05 and S06--S09 regimes before fitting a shared-alpha model? I recommend yes.
 
-Details: [protocol/results](IMMIGRATION_SENSITIVITY.md), [negative-alpha audit](NEGATIVE_ALPHA_NOTE.md). Raw records and plots: `forest/results/immigration-sensitivity-20261014/`. [Draft PR #1](https://github.com/thltsui/cfDNA-FRIME/pull/1) remains unmerged.
+Details: [CROSS_PROFILE_ABC.md](CROSS_PROFILE_ABC.md). Plots/tables: `forest/results/cross-profile-20261014/analysis/`. [Draft PR #1](https://github.com/thltsui/cfDNA-FRIME/pull/1) remains unmerged.

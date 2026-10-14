@@ -28,3 +28,11 @@ Sampled aggregate peak RSS 812482560 bytes. Per-population history tolerance 1e-
 Audited source/data/plan hashes, complete proposal/repeat coverage, unique population/read streams, NPZ/JSONL counts and candidate/tail summaries.
 Raw evidence: results/immigration-sensitivity-20261014/ (ignored). All 12 confirmed candidates retained in analysis tables.
 Mathematical audit: NEGATIVE_ALPHA_NOTE.md distinguishes positive-cutoff simulation from weak zero-cutoff PDE convergence and dust flux; no simulator model changed.
+
+2026-10-14 Cross-profile marginal ABC screen
+Code: 6df5d25; original latent bank source: 4d99ff4.
+161 passed in 22.59s; new tests cover multinomial moments, failure retention, stream separation/reproducibility and incomplete/modified bank rejection.
+12 new profiles; 48000 new multinomial draws; 4000 reused latent populations; no new families or nodes.
+Screen/input audit: 4.869574542s. Read root seed 2026101402; population bank seed 2026101401.
+Independent audit recomputed all 52000 marginal distances and all acceptance/alpha summaries; S04 unchanged; all artifact hashes verified.
+Results: results/cross-profile-20261014/; no new candidate confirmations or hierarchical model.

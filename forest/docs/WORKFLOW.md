@@ -1,46 +1,46 @@
 # Daily research handoff — proposed, not activated
 
-Suggested local review time: 20:30–20:45 Europe/London. This document is not a
-scheduler; no recurring runner has been activated.
+Suggested local review time: 20:30--20:45 Europe/London. No recurring runner has
+been activated; this file is not a scheduler.
 
 ## State
 
-Completed: Mac mini baseline, iid Monte Carlo, restricted ABC pilot, Beta
-immigration validation and the full four-case S04 sensitivity study. The user
-approved the common expected observable abundance prior on 14 October after the
-original rate-prior plan stopped at resource preflight. The revised frozen plan
-completed all 4,000 screening and 1,200 candidate populations, with no failed or
-replaced proposals. Scientific source was fixed at 4d99ff4 throughout.
+Completed: baseline, iid Monte Carlo, restricted ABC pilot, Beta immigration,
+the full S04 sensitivity study (4,000 screening + 1,200 fresh candidate
+populations), negative-alpha/cutoff audit, and the authorized marginal ABC screen
+of all other 12 mtDNA profiles. The latter reuses the complete 4,000-population
+bank and draws 48,000 new readouts; it does not generate new latent populations.
 
-Read REVIEW.md for the concise report, IMMIGRATION_SENSITIVITY.md for protocol
-and measured results, TEST_RESULTS.txt for validation, and NEGATIVE_ALPHA_NOTE.md
-for the zero-cutoff mathematical audit. MATHEMATICS.md remains the production
-model specification. The draft PR #1 is open and unmerged.
+Current report: REVIEW.md. Cross-profile protocol/results: CROSS_PROFILE_ABC.md.
+S04 protocol/results: IMMIGRATION_SENSITIVITY.md. Production law: MATHEMATICS.md.
+Cutoff/asymptotic audit: NEGATIVE_ALPHA_NOTE.md. Validation: TEST_RESULTS.txt.
+Raw outputs are ignored under results/. Draft PR #1 remains open and unmerged.
 
 ## Per-session instruction
 
-Read the current draft PR and review comments before beginning new work. Complete
+Read the current draft PR/comments and latest report before new work. Complete
 at most one approved task. Preserve the model; propose scientific changes before
-implementing them. Run relevant tests and report the actual environment. Update
-one concise review packet with evidence, uncertainty and at most one consequential
-decision. Keep raw outputs in ignored results/. Work on the feature branch; never
-auto-merge, publish clinical claims or alter legacy data.
-
-Do not claim experiments or scheduling ran without execution records. Resource
-caps must fail explicitly; never filter expensive or failed proposals and treat
-the remainder as iid. Do not create a backlog of unreviewed implementations.
+implementing them. Validate relevant changes and report actual evidence. Keep
+one concise review packet, detailed logs separately, and no growing backlog.
+Never merge automatically, alter legacy/data files, or claim biological causes
+from descriptive ABC fits. Fail resource/numerical problems explicitly; never
+replace failed draws or filter expensive realizations.
 
 ## Current bounded task
 
-The approved full screen is complete. The best displayed candidate has negative
-alpha and Beta immigration, but retains a systematic CDF residual. The study
-does not establish a biological mechanism, posterior model odds, or a threshold
-at alpha_F=-1. Display choices were selected using confirmation results; these
-are descriptive in-sample comparisons.
+The requested other-profile ABC screen is complete. S01/S05 favour positive-alpha
+candidates while S04 and S06--S09 favour negative candidates under the current
+priors, both immigration laws and the .10/.15 tolerances. Several other profiles
+are sparse or tolerance-sensitive. This is not a joint shared-alpha test or proof
+of biological heterogeneity; shared bank reuse induces Monte Carlo dependence.
 
-Keep the observation law provisional and distinguish this study from the thesis
-fits, whose exit regimes differ. Finite positive cutoff remains part of the
-model. Zero-cutoff PDE asymptotics are an audited research note, not a change to
-the simulator or its history certificate. Adapted certificates remain unapproved.
-The next proposed scientific decision is validation across additional profiles;
-no new study or recurring task has been started.
+The user explicitly retained the finite destruction cutoff. The underlying
+1 bp destruction assumption and exact 39.5 bp observation projection are kept
+distinct. No integer-splitting or zero-cutoff model was introduced. The thesis
+tail-slope relation permits negative alpha for uniform input; Beta immigration
+adds a slope term and confounds that simple inference. Adapted certificates
+remain unapproved.
+
+Suggested next decision: independent candidate confirmation for contrasting
+profiles before a shared-alpha/hierarchical model. Neither new confirmations
+nor that model have been started. No recurring task has been activated.
