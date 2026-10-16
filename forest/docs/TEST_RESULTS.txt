@@ -36,3 +36,12 @@ Code: 6df5d25; original latent bank source: 4d99ff4.
 Screen/input audit: 4.869574542s. Read root seed 2026101402; population bank seed 2026101401.
 Independent audit recomputed all 52000 marginal distances and all acceptance/alpha summaries; S04 unchanged; all artifact hashes verified.
 Results: results/cross-profile-20261014/; no new candidate confirmations or hierarchical model.
+
+2026-10-16 Fresh six-profile confirmation and uncertainty analysis
+Simulation source 32c07ff; Python 3.14.3; NumPy 2.5.3; Apple M4.
+168 passed in 22.75s. New checks cover frozen candidate selection, independent streams, completion/failure records, scalar/vectorized rejection equivalence and known total-variance decomposition.
+All 3600 populations completed; no failures/replacements/no-read outcomes; unique population/read streams disjoint from prior screen and confirmation.
+46007254 families; 4692970673 nodes; 2565.714171s driver wall time; 480854016 bytes sampled aggregate peak RSS.
+All saved histograms, counts, distances, models, certificates and input/output hashes audited. Maximum absolute mean-count discrepancy 3.040955 empirical MCSE across 36 settings.
+6000 conditional observed-read bootstraps; 3600 known-truth refits at three tolerances, retaining unavailable fits. No joint shared-alpha test.
+Raw evidence: results/profile-confirmation-20261016/.

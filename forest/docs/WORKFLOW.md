@@ -11,6 +11,8 @@ populations), negative-alpha/cutoff audit, and the authorized marginal ABC scree
 of all other 12 mtDNA profiles. The latter reuses the complete 4,000-population
 bank and draws 48,000 new readouts; it does not generate new latent populations.
 
+Fresh six-profile confirmation is also complete; protocol: PROFILE_CONFIRMATION.md.
+
 Current report: REVIEW.md. Cross-profile protocol/results: CROSS_PROFILE_ABC.md.
 S04 protocol/results: IMMIGRATION_SENSITIVITY.md. Production law: MATHEMATICS.md.
 Cutoff/asymptotic audit: NEGATIVE_ALPHA_NOTE.md. Validation: TEST_RESULTS.txt.
@@ -28,19 +30,15 @@ replace failed draws or filter expensive realizations.
 
 ## Current bounded task
 
-The requested other-profile ABC screen is complete. S01/S05 favour positive-alpha
-candidates while S04 and S06--S09 favour negative candidates under the current
-priors, both immigration laws and the .10/.15 tolerances. Several other profiles
-are sparse or tolerance-sensitive. This is not a joint shared-alpha test or proof
-of biological heterogeneity; shared bank reuse induces Monte Carlo dependence.
+Completed the authorized fresh confirmation for S01/S05 versus S06--S09 with
+Beta immigration: 3,600 independent populations, conditional read bootstraps,
+known-truth recovery and full provenance audit. See PROFILE_CONFIRMATION.md and
+REVIEW.md. Candidate-fit differences persist, but biological exponent differences
+are not established; near-zero median signs are unreliable and a common candidate
+fits both S06 and S08. No shared-alpha/hierarchical model has been started.
 
-The user explicitly retained the finite destruction cutoff. The underlying
-1 bp destruction assumption and exact 39.5 bp observation projection are kept
-distinct. No integer-splitting or zero-cutoff model was introduced. The thesis
-tail-slope relation permits negative alpha for uniform input; Beta immigration
-adds a slope term and confounds that simple inference. Adapted certificates
-remain unapproved.
-
-Suggested next decision: independent candidate confirmation for contrasting
-profiles before a shared-alpha/hierarchical model. Neither new confirmations
-nor that model have been started. No recurring task has been activated.
+The finite destruction cutoff remains: underlying 1 bp destruction and exact
+39.5 bp observation projection are distinct. No model change or adapted
+certificate was introduced. A shared-versus-profile-specific exponent comparison
+with nuisance flexibility and recovery checks is the next proposed decision.
+No recurring task has been activated.

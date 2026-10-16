@@ -1,30 +1,41 @@
-# FRIME LOCAL REPORT — 14 October 2026
+# FRIME LOCAL REPORT — 16 October 2026
 
 Objective:
-Check whether negative alpha_F is consistently supported across mtDNA profiles, allowing Beta immigration and retaining the finite destruction cutoff.
+Confirm S01/S05 versus S06–S09 with fresh populations and Beta immigration, then assess uncertainty before testing a shared exponent.
 
 What ran:
-- Screened the other 12 profiles against the complete 4,000-population bank; retained S04 as a reference.
-- Generated 48,000 new multinomial read draws at each profile's actual depth; no new latent populations were needed.
-- Compared positive/negative alpha with uniform/Beta immigration at the three frozen tolerances .05, .10 and .15; audited every distance and acceptance summary.
+- 3,600 independent populations: six profiles, three prespecified candidates per exponent sign, 100 repeats each; finite destruction cutoff retained.
+- 1,000 read bootstraps per profile and refits of all fresh readouts against the complete fixed Beta ABC bank.
+- Provenance, stream independence, population counts and every saved histogram/distance audited.
 
 Main result:
-Negative alpha is favoured in several profiles, but not all. At D<=.10 with Beta immigration, negative/positive acceptances are S01: 5/25; S05: 1/19; S06: 37/1; S07: 46/1; S08: 29/0; S09: 41/0. Each sign had 1,000 proposals. Their accepted-alpha medians are +.27, +.85, -.71, -.51, -.85 and -.82, respectively. S04 remains 75/0 with median -1.00. The broad S01/S05 versus S06--S09 contrast persists with uniform immigration and at D<=.15. At .05 most profiles have too few acceptances for useful alpha inference.
+The candidate-fit contrast survives fresh population randomness. For the original rank-1 candidate of each sign, these are counts satisfying D<=.10:
+
+| Profile | Positive candidate | Negative candidate |
+|---|---:|---:|
+| S01 | 91/100 | 48/100 |
+| S05 | 55/100 | 16/100 |
+| S06 | 12/100 | 89/100 |
+| S07 | 28/100 | 66/100 |
+| S08 | 0/100 | 99/100 |
+| S09 | 0/100 | 100/100 |
+
+These estimate q_theta=P_theta(D(Y_new,y)<=.10), not P(alpha_F<0|y). Read resampling also preserves the broad contrast, conditional on the existing bank.
 
 Evidence:
-- Runtime: marginal screen and input audit 4.87 seconds; this reuses the previous 121.69-minute population screen.
-- Scale: 13 profiles, 52,000 profile-level outcomes from 4,000 unique latent populations; new profiles contain 50--894 reads versus S04's 5,572.
-- Seeds/repeats: new read seed 2026101402; original population seed 2026101401. No new candidate confirmations or repeated latent simulations in this extension.
-- Tests: 161 passed in 22.59 seconds. All bank hashes, new distances, acceptance counts and alpha summaries audited; original S04 results preserved.
-- Commit: screen code 6df5d25; latent-bank scientific source 4d99ff4. Approximate joint forward-history bound 4e-7 applies to the shared bank, not the conditional posterior.
+- Runtime: 42.76 minutes; sampled aggregate peak RSS 458.6 MiB.
+- Scale: 46,007,254 immigrant families; 4,692,970,673 generated nodes; eight workers, batch 128.
+- Seeds/repeats: 2026101601; 100 fresh populations per candidate; no failed or replaced populations.
+- Tests: 168 passed in 22.75s; count means differ from their analytic predictions by at most 3.04 empirical MCSE across 36 candidates.
+- Commit: simulation source 32c07ff; new-study forward-history error bound <=3.6e-7.
 
 Interpretation:
-The screen suggests profile variation, not a demonstrated universal alpha or proven biological heterogeneity. The thesis slope relation beta=-alpha_F-2 permits negative alpha: its reported mtDNA slope -1.56 corresponds to alpha_F=-.44. Beta immigration generally modifies that relation, so slope alone no longer identifies alpha_F.
+The contrast is reproducible among the tested parameter settings. Different biological exponents are not yet established. The identical alpha_F=-.814 candidate fits S06 in 100/100 and S08 in 99/100 draws, so their differing ABC medians need not mean different exponents.
 
 Uncertainty / blocker:
-Sparse accepted samples, tolerance dependence, different read depths and possible observation-model mismatch. Cross-profile Monte Carlo errors are correlated through the shared bank. Accepted-alpha quantiles are finite-tolerance ABC summaries, not calibrated confidence intervals. No joint shared-alpha model was fitted.
+Near-zero signs are poorly resolved: with true alpha_F=+.028 for an S06 candidate, the inferred median is negative in 88/100 repeats, while all 100 empirical ABC parameter ranges include the true value. Immigration/exit trade-offs, finite-bank resolution and tolerance remain important. No shared-exponent model has been tested.
 
 Decision for me:
-Should the next bounded study independently confirm the contrasting S01/S05 and S06--S09 regimes before fitting a shared-alpha model? I recommend yes.
+Proceed to a shared-alpha versus profile-specific-alpha comparison, allowing profile-specific Beta immigration and exit? I recommend a recovery-checked comparison, rather than treating the present medians as biological differences.
 
-Details: [CROSS_PROFILE_ABC.md](CROSS_PROFILE_ABC.md). Plots/tables: `forest/results/cross-profile-20261014/analysis/`. [Draft PR #1](https://github.com/thltsui/cfDNA-FRIME/pull/1) remains unmerged.
+Details: [PROFILE_CONFIRMATION.md](PROFILE_CONFIRMATION.md). Local evidence: `forest/results/profile-confirmation-20261016/`. [Draft PR #1](https://github.com/thltsui/cfDNA-FRIME/pull/1) remains unmerged.
