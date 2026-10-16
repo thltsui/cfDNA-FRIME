@@ -1,0 +1,47 @@
+12 October 2026 — scientific source committed as 9398870
+Full suite: 99 passed in 10.12s
+Python 3.14.3; NumPy 2.5.3; pytest 9.1.1; Apple M4 Mac mini.
+New checks cover multinomial count weighting, no-read outcomes, fixed acceptance, data binning/rounding, stream separation, cap-error propagation and marked-tree projection with ancestor pruning.
+Main ABC output audit: all 13 consistency checks passed.
+Additional analytic projection validation: 300 populations at each of two cutoffs; max absolute analytic deviation 2.178 MCSE. No seeds rerun to improve statistical results.
+Detailed records: forest/results/abc-pilot-20261012/
+Historical test/benchmark evidence remains in Git history and forest/results/.
+
+
+2026-10-12 Beta immigration and frozen sensitivity executor
+Code commit 10ac6a33b9254afa82fcc58cdf1679aabe416677
+Python 3.14.3; NumPy 2.5.3; macOS Apple M4, 10 cores, 16 GiB.
+135 passed in 20.61s. Six 300-population analytic checks: maximum absolute discrepancy 2.48084 MCSE.
+1,800 populations; 153,247 families; 1,057,901 generated nodes; 8.89s summed simulation time.
+JSON means, expected values, MCSEs, seeds, models and certificates: results/immigration-sensitivity-20261012/validation.json
+Complete 4,000-proposal preflight stopped before screening: 546 proposals exceed the 100,000-family cap. No proposals filtered.
+
+2026-10-14 Approved abundance-prior ABC screen and confirmation
+Scientific code: 4d99ff47b2f8ae1b77fe3f7b38eb808fcefe74e7
+158 passed in 21.69s; Python 3.14.3; NumPy 2.5.3; SciPy 1.18.1.
+New checks: analytic occupation integrals (Uniform/Beta roots, positive/negative alpha, constant/no exit), rate rescaling, tighter-tolerance refinement, prior reproducibility, one-ULP PFB boundary stability.
+All 4000 prior maps completed without filtering; max accepted relative refinement discrepancy 9.0286e-8.
+Production: 4000 screening plus 1200 confirmation populations, zero failures or replacements.
+Root seed 2026101401; eight persistent workers; batch 128. Both stage exit codes 0.
+223516196 immigrant families; 21416967014 generated nodes; 11431.955194 seconds driver wall time.
+Sampled aggregate peak RSS 812482560 bytes. Per-population history tolerance 1e-10; study union bound <=5.2e-7.
+Audited source/data/plan hashes, complete proposal/repeat coverage, unique population/read streams, NPZ/JSONL counts and candidate/tail summaries.
+Raw evidence: results/immigration-sensitivity-20261014/ (ignored). All 12 confirmed candidates retained in analysis tables.
+Mathematical audit: NEGATIVE_ALPHA_NOTE.md distinguishes positive-cutoff simulation from weak zero-cutoff PDE convergence and dust flux; no simulator model changed.
+
+2026-10-14 Cross-profile marginal ABC screen
+Code: 6df5d25; original latent bank source: 4d99ff4.
+161 passed in 22.59s; new tests cover multinomial moments, failure retention, stream separation/reproducibility and incomplete/modified bank rejection.
+12 new profiles; 48000 new multinomial draws; 4000 reused latent populations; no new families or nodes.
+Screen/input audit: 4.869574542s. Read root seed 2026101402; population bank seed 2026101401.
+Independent audit recomputed all 52000 marginal distances and all acceptance/alpha summaries; S04 unchanged; all artifact hashes verified.
+Results: results/cross-profile-20261014/; no new candidate confirmations or hierarchical model.
+
+2026-10-16 Fresh six-profile confirmation and uncertainty analysis
+Simulation source 32c07ff; Python 3.14.3; NumPy 2.5.3; Apple M4.
+168 passed in 22.75s. New checks cover frozen candidate selection, independent streams, completion/failure records, scalar/vectorized rejection equivalence and known total-variance decomposition.
+All 3600 populations completed; no failures/replacements/no-read outcomes; unique population/read streams disjoint from prior screen and confirmation.
+46007254 families; 4692970673 nodes; 2565.714171s driver wall time; 480854016 bytes sampled aggregate peak RSS.
+All saved histograms, counts, distances, models, certificates and input/output hashes audited. Maximum absolute mean-count discrepancy 3.040955 empirical MCSE across 36 settings.
+6000 conditional observed-read bootstraps; 3600 known-truth refits at three tolerances, retaining unavailable fits. No joint shared-alpha test.
+Raw evidence: results/profile-confirmation-20261016/.
